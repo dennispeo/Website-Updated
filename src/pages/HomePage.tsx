@@ -1,0 +1,20 @@
+import React from 'react';
+import Hero from '../components/Hero';
+import About from '../components/About';
+import Games from '../components/Games';
+import Backoffice from '../components/Mechanics';
+import Footer from '../components/Footer';
+
+const HomePage = () => {
+  return (
+    <>
+      <Hero />
+      <About />
+      <Games />
+      <Backoffice />
+      <Footer />
+    </>
+  );
+};
+
+export default HomePage;
