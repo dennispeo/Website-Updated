@@ -40,23 +40,11 @@ function App() {
           </>
         } />
         
-        {/* Admin Routes */}
+        {/* Admin Routes - Temporarily without authentication */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin" element={
-          <ProtectedRoute requireAdmin>
-            <AdminDashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/games" element={
-          <ProtectedRoute requireAdmin>
-            <GameManagementPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/admin/news" element={
-          <ProtectedRoute requireAdmin>
-            <NewsManagementPage />
-          </ProtectedRoute>
-        } />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/games" element={<GameManagementPage />} />
+        <Route path="/admin/news" element={<NewsManagementPage />} />
       </Routes>
     </div>
   );
