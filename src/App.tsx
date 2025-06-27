@@ -3,21 +3,61 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CareersPage from './pages/CareersPage';
 import ZeusGamePage from './pages/ZeusGamePage';
+import AdminLoginPage from './pages/AdminLoginPage';
+import AdminDashboard from './pages/AdminDashboard';
+import GameManagementPage from './pages/GameManagementPage';
+import NewsManagementPage from './pages/NewsManagementPage';
 import Navigation from './components/Navigation';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import FloatingContactButton from './components/FloatingContactButton';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <div className="bg-black text-white">
       <AgeVerificationModal />
-      <Navigation />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/careers" element={<CareersPage />} />
-        <Route path="/games/zeus-clockwork-tyrant" element={<ZeusGamePage />} />
+        {/* Public Routes */}
+        <Route path="/" element={
+          <>
+            <Navigation />
+            <HomePage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/careers" element={
+          <>
+            <Navigation />
+            <CareersPage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/games/:gameSlug" element={
+          <>
+            <Navigation />
+            <ZeusGamePage />
+            <FloatingContactButton />
+          </>
+        } />
+        
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/admin" element={
+          <ProtectedRoute requireAdmin>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/games" element={
+          <ProtectedRoute requireAdmin>
+            <GameManagementPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/news" element={
+          <ProtectedRoute requireAdmin>
+            <NewsManagementPage />
+          </ProtectedRoute>
+        } />
       </Routes>
-      <FloatingContactButton />
     </div>
   );
 }
