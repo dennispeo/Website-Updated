@@ -158,7 +158,7 @@ const GamePage = () => {
   return (
     <>
       <div className="min-h-screen bg-brand-dark-gradient">
-        {/* Hero Section */}
+        {/* Hero Section with Background Image */}
         <section className="relative pt-20 pb-12 overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
@@ -166,14 +166,14 @@ const GamePage = () => {
               <img 
                 src={game.image_url} 
                 alt={game.title}
-                className="w-full h-full object-cover opacity-30"
+                className="w-full h-full object-cover opacity-20"
                 onError={(e) => {
                   console.log('🎮 GamePage: Hero image failed to load');
                   e.currentTarget.style.display = 'none';
                 }}
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/70"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/50"></div>
           </div>
 
@@ -189,100 +189,76 @@ const GamePage = () => {
               </Link>
             </div>
 
-            {/* Game Content */}
-            <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Game Info */}
-              <div className="space-y-8">
-                <div>
-                  <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-4">
-                    {titleParts.main}{titleParts.sub && <>: <span className="text-brand-orange">{titleParts.sub}</span></>}
-                  </h1>
-                  <p className="text-xl text-gray-300 leading-relaxed font-body">
-                    {game.description}
-                  </p>
-                </div>
+            {/* Game Content - Single Column Layout */}
+            <div ref={heroRef} className="max-w-4xl mx-auto text-center space-y-8">
+              {/* Game Title and Description */}
+              <div>
+                <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-6">
+                  {titleParts.main}{titleParts.sub && <>: <span className="text-brand-orange">{titleParts.sub}</span></>}
+                </h1>
+                <p className="text-xl text-gray-300 leading-relaxed font-body max-w-3xl mx-auto">
+                  {game.description}
+                </p>
+              </div>
 
-                {/* Expanded Stats Grid - Now includes 7 items with Features */}
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">RTP</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.max_win}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Max Win</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.volatility}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Volatility</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.hit_frequency}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Hit Rate</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.reels_rows}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Reel Layout</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.free_spins}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Free Spins</div>
-                  </div>
-                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800 col-span-2 md:col-span-1">
-                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.features || 'Standard'}</div>
-                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Features</div>
-                  </div>
+              {/* Expanded Stats Grid - Now includes 7 items with Features */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">RTP</div>
                 </div>
-
-                {/* Betting Range */}
-                <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-                  <h3 className="text-lg font-heading font-bold text-white mb-4">Betting Range</h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xl font-bold text-brand-orange font-heading">{game.min_bet}</div>
-                      <div className="text-sm text-gray-400 font-body">Minimum Bet</div>
-                    </div>
-                    <div className="text-gray-400">—</div>
-                    <div>
-                      <div className="text-xl font-bold text-brand-orange font-heading">{game.max_bet}</div>
-                      <div className="text-sm text-gray-400 font-body">Maximum Bet</div>
-                    </div>
-                  </div>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.max_win}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Max Win</div>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body">
-                    <Play size={20} />
-                    <span>Play Demo</span>
-                  </button>
-                  <button className="group flex items-center justify-center space-x-3 border-2 border-brand-orange text-brand-orange font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:bg-brand-orange hover:text-brand-dark font-body">
-                    <Download size={20} />
-                    <span>Download Assets</span>
-                  </button>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.volatility}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Volatility</div>
+                </div>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.hit_frequency}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Hit Rate</div>
+                </div>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.reels_rows}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Reel Layout</div>
+                </div>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.free_spins}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Free Spins</div>
+                </div>
+                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50 col-span-2 md:col-span-1">
+                  <div className="text-2xl font-bold text-brand-orange font-heading">{game.features || 'Standard'}</div>
+                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Features</div>
                 </div>
               </div>
 
-              {/* Game Preview */}
-              <div className="relative">
-                <div className="bg-black/20 p-8 rounded-2xl border border-gray-800 backdrop-blur-sm">
-                  {game.image_url ? (
-                    <img 
-                      src={game.image_url} 
-                      alt={`${game.title} Preview`}
-                      className="w-full rounded-lg shadow-2xl"
-                      onError={(e) => {
-                        console.log('🎮 GamePage: Preview image failed to load');
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center">
-                      <p className="text-gray-400 font-body">Game Preview Coming Soon</p>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
+              {/* Betting Range */}
+              <div className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md mx-auto">
+                <h3 className="text-lg font-heading font-bold text-white mb-4">Betting Range</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xl font-bold text-brand-orange font-heading">{game.min_bet}</div>
+                    <div className="text-sm text-gray-300 font-body">Minimum Bet</div>
+                  </div>
+                  <div className="text-gray-400">—</div>
+                  <div>
+                    <div className="text-xl font-bold text-brand-orange font-heading">{game.max_bet}</div>
+                    <div className="text-sm text-gray-300 font-body">Maximum Bet</div>
+                  </div>
                 </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body">
+                  <Play size={20} />
+                  <span>Play Demo</span>
+                </button>
+                <button className="group flex items-center justify-center space-x-3 border-2 border-brand-orange text-brand-orange font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:bg-brand-orange hover:text-brand-dark font-body">
+                  <Download size={20} />
+                  <span>Download Assets</span>
+                </button>
               </div>
             </div>
           </div>
