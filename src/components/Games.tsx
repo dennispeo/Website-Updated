@@ -152,9 +152,7 @@ const Games = () => {
               return (
                 <div
                   key={game.id}
-                  className={`game-card bg-black/30 rounded-xl overflow-hidden border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)] ${
-                    cardsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                  } ${!game.available ? 'opacity-60' : ''}`}
+                  className={`game-card bg-black/30 rounded-xl overflow-hidden border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)] ${!game.available ? 'opacity-60' : ''}`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   {/* Game Image */}
