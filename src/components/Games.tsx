@@ -14,7 +14,7 @@ const Games = () => {
     id: '1',
     title: "Zeus: Clockwork Tyrant",
     description: "An oppressive myth-tech world where wilds move, merge, and explode. Powered by our wavE™ mechanic, this game turns tension into payoff.",
-    image_url: "/image.png",
+    image_url: "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
     route: "/games/zeus-clockwork-tyrant",
     available: true,
     rtp: '96.06%',
