@@ -9,6 +9,7 @@ import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GameManagementPage from './pages/GameManagementPage';
 import NewsManagementPage from './pages/NewsManagementPage';
+import UserManagementPage from './pages/UserManagementPage';
 import Navigation from './components/Navigation';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import FloatingContactButton from './components/FloatingContactButton';
@@ -71,6 +72,11 @@ function App() {
         <Route path="/admin/news" element={
           <ProtectedRoute requireAdmin={true}>
             <NewsManagementPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/users" element={
+          <ProtectedRoute requireAdmin={true}>
+            <UserManagementPage />
           </ProtectedRoute>
         } />
       </Routes>

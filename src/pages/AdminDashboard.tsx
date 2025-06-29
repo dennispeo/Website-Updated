@@ -84,7 +84,7 @@ const AdminDashboard = () => {
             Content Management System
           </h1>
           <p className="text-lg text-gray-300 font-body">
-            Manage your website content, games, and news from this central dashboard.
+            Manage your website content, games, news, and users from this central dashboard.
           </p>
         </div>
 
