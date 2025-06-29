@@ -36,10 +36,14 @@ const Games = () => {
   }, []);
 
   const fetchGames = async () => {
+    console.log('🎮 fetchGames started');
+    
     // Always start with Zeus game to ensure it's visible
     setGames([zeusGame]);
+    console.log('🎮 Initial Zeus game set:', [zeusGame]);
     
     try {
+      console.log('🎮 Attempting to fetch from Supabase...');
       const { data, error } = await supabase
         .from('games')
         .select('*')
@@ -47,23 +51,39 @@ const Games = () => {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.log('Supabase connection issue, using fallback data');
+        console.log('🎮 Supabase error occurred:', error);
+        console.log('🎮 Using fallback data (Zeus game only)');
         // Keep Zeus game as fallback
       } else if (data && data.length > 0) {
+        console.log('🎮 Supabase data received:', data);
         // Use Supabase data but ensure Zeus is included
         const hasZeus = data.some(game => game.title.includes('Zeus'));
+        console.log('🎮 Does Supabase data include Zeus?', hasZeus);
+        
         if (hasZeus) {
+          console.log('🎮 Setting games to Supabase data:', data);
           setGames(data);
         } else {
+          console.log('🎮 Adding Zeus to Supabase data:', [zeusGame, ...data]);
           setGames([zeusGame, ...data]);
         }
+      } else {
+        console.log('🎮 No data from Supabase, keeping Zeus game');
       }
       // If no data from Supabase, Zeus game is already set
     } catch (error) {
-      console.log('Error fetching games, using fallback:', error);
+      console.log('🎮 Error fetching games:', error);
+      console.log('🎮 Using fallback (Zeus game already set)');
       // Zeus game is already set as fallback
     } finally {
+      console.log('🎮 Setting loading to false');
+      console.log('🎮 Final games array before setLoading(false):', games);
       setLoading(false);
+      
+      // Log the games state after a brief delay to see the actual state
+      setTimeout(() => {
+        console.log('🎮 Games state after setLoading(false):', games);
+      }, 100);
     }
   };
 
@@ -89,6 +109,10 @@ const Games = () => {
   };
 
   const allGames = [...games, comingSoonGame];
+  
+  console.log('🎮 Render - loading:', loading);
+  console.log('🎮 Render - games:', games);
+  console.log('🎮 Render - allGames:', allGames);
 
   return (
     <section id="games" className="py-20 bg-brand-dark-gradient">
