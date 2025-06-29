@@ -31,11 +31,11 @@ const GamePage = () => {
     try {
       console.log('🎮 GamePage: Attempting to fetch from Supabase...');
       
-      // Try to find game by route
+      // Try to find game by route first
       const route = `/games/${gameSlug}`;
       console.log('🎮 GamePage: Looking for route:', route);
       
-      const { data, error: fetchError } = await supabase
+      let { data, error: fetchError } = await supabase
         .from('games')
         .select('*')
         .eq('route', route)
@@ -51,23 +51,46 @@ const GamePage = () => {
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
         
-        const { data: titleData, error: titleError } = await supabase
+        console.log('🎮 GamePage: Searching for title containing:', titleSearch);
+        
+        const titleResult = await supabase
           .from('games')
           .select('*')
           .ilike('title', `%${titleSearch}%`)
           .eq('available', true)
           .single();
 
-        if (titleError || !titleData) {
-          throw new Error(`Game "${gameSlug}" not found or not available`);
+        if (titleResult.error || !titleResult.data) {
+          console.log('🎮 GamePage: Title search failed, trying exact slug match...');
+          
+          // Last attempt: try to find any available game that matches the slug pattern
+          const slugResult = await supabase
+            .from('games')
+            .select('*')
+            .eq('available', true);
+
+          if (slugResult.error || !slugResult.data || slugResult.data.length === 0) {
+            throw new Error(`Game "${gameSlug}" not found or not available`);
+          }
+
+          // Find the first matching game
+          const matchingGame = slugResult.data.find(g => 
+            g.route.includes(gameSlug) || 
+            g.title.toLowerCase().includes(gameSlug.replace('-', ' '))
+          );
+
+          if (!matchingGame) {
+            throw new Error(`Game "${gameSlug}" not found or not available`);
+          }
+
+          data = matchingGame;
+        } else {
+          data = titleResult.data;
         }
-        
-        setGame(titleData);
-      } else {
-        setGame(data);
       }
 
-      console.log('🎮 GamePage: Successfully loaded game:', data?.title || titleData?.title);
+      console.log('🎮 GamePage: Successfully loaded game:', data);
+      setGame(data);
       
     } catch (error) {
       console.error('🎮 GamePage: Error fetching game:', error);
@@ -77,47 +100,62 @@ const GamePage = () => {
     }
   };
 
-  // Dynamic mechanics based on game data
+  // Dynamic mechanics based on game data - purely from database
   const getMechanics = (game: Game) => {
-    // This could be expanded to read from a mechanics field in the database
-    // For now, we'll generate some based on the game's characteristics
-    const baseMechanics = [
-      {
-        name: 'Advanced Wilds',
-        description: 'Dynamic wild symbols that enhance winning combinations',
-        icon: <Zap className="text-brand-orange" size={24} />
-      },
-      {
-        name: 'Bonus Features',
-        description: 'Engaging bonus rounds with multiplied rewards',
-        icon: <Target className="text-brand-orange" size={24} />
-      },
-      {
-        name: 'High Volatility',
-        description: game.volatility === 'High' ? 'High-risk, high-reward gameplay' : 'Balanced risk and reward system',
-        icon: <TrendingUp className="text-brand-orange" size={24} />
-      },
-      {
-        name: 'Secure Gaming',
-        description: 'Certified fair play and secure transactions',
-        icon: <Shield className="text-brand-orange" size={24} />
-      }
-    ];
+    const mechanics = [];
 
-    return baseMechanics;
+    // Add mechanics based on game characteristics
+    if (game.volatility === 'High') {
+      mechanics.push({
+        name: 'High Volatility System',
+        description: `Experience ${game.volatility.toLowerCase()} volatility gameplay with potential for massive wins up to ${game.max_win}`,
+        icon: <TrendingUp className="text-brand-orange" size={24} />
+      });
+    } else {
+      mechanics.push({
+        name: `${game.volatility} Volatility`,
+        description: `Balanced ${game.volatility.toLowerCase()} volatility gameplay designed for consistent entertainment`,
+        icon: <TrendingUp className="text-brand-orange" size={24} />
+      });
+    }
+
+    mechanics.push({
+      name: 'Advanced RTP',
+      description: `Optimized ${game.rtp} return-to-player rate ensuring fair and competitive gameplay`,
+      icon: <BarChart3 className="text-brand-orange" size={24} />
+    });
+
+    mechanics.push({
+      name: 'Hit Frequency',
+      description: `${game.hit_frequency} hit frequency provides regular winning opportunities`,
+      icon: <Target className="text-brand-orange" size={24} />
+    });
+
+    mechanics.push({
+      name: 'Bonus Features',
+      description: `Free spins trigger ${game.free_spins} with exciting bonus rounds and multipliers`,
+      icon: <Zap className="text-brand-orange" size={24} />
+    });
+
+    return mechanics;
   };
 
   const getFeatures = (game: Game) => [
-    { label: 'Feature Buy-in', value: 'Available', icon: <Gamepad2 size={16} /> },
-    { label: 'Bonus Mode', value: 'Yes', icon: <Target size={16} /> },
     { label: 'RTP', value: game.rtp, icon: <BarChart3 size={16} /> },
-    { label: 'Volatility', value: game.volatility, icon: <Zap size={16} /> }
+    { label: 'Volatility', value: game.volatility, icon: <TrendingUp size={16} /> },
+    { label: 'Max Win', value: game.max_win, icon: <Target size={16} /> },
+    { label: 'Reels Layout', value: game.reels_rows, icon: <Gamepad2 size={16} /> }
   ];
 
   // Helper function to safely format dates
   const formatDate = (dateString: string) => {
+    if (!dateString) return 'TBA';
     try {
-      return new Date(dateString).toLocaleDateString();
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
     } catch {
       return 'TBA';
     }
@@ -125,9 +163,10 @@ const GamePage = () => {
 
   // Helper function to split title safely
   const getTitleParts = (title: string) => {
+    if (!title) return { main: 'Game', sub: '' };
     const parts = title.split(':');
     return {
-      main: parts[0] || title,
+      main: parts[0]?.trim() || title,
       sub: parts[1]?.trim() || ''
     };
   };
@@ -236,6 +275,22 @@ const GamePage = () => {
                   </div>
                 </div>
 
+                {/* Betting Range */}
+                <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
+                  <h3 className="text-lg font-heading font-bold text-white mb-4">Betting Range</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-xl font-bold text-brand-orange font-heading">{game.min_bet}</div>
+                      <div className="text-sm text-gray-400 font-body">Minimum Bet</div>
+                    </div>
+                    <div className="text-gray-400">—</div>
+                    <div>
+                      <div className="text-xl font-bold text-brand-orange font-heading">{game.max_bet}</div>
+                      <div className="text-sm text-gray-400 font-body">Maximum Bet</div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body">
@@ -252,7 +307,7 @@ const GamePage = () => {
               {/* Game Preview */}
               <div className="relative">
                 <div className="bg-black/20 p-8 rounded-2xl border border-gray-800 backdrop-blur-sm">
-                  {game.image_url && (
+                  {game.image_url ? (
                     <img 
                       src={game.image_url} 
                       alt={`${game.title} Preview`}
@@ -262,6 +317,10 @@ const GamePage = () => {
                         e.currentTarget.style.display = 'none';
                       }}
                     />
+                  ) : (
+                    <div className="w-full h-64 bg-gray-800 rounded-lg flex items-center justify-center">
+                      <p className="text-gray-400 font-body">Game Preview Coming Soon</p>
+                    </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
                 </div>
@@ -305,7 +364,7 @@ const GamePage = () => {
                 {/* Game Description */}
                 <div className="max-w-4xl mx-auto text-center">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    Digital Chaos Unleashed
+                    {game.title}
                   </h2>
                   <p className="text-lg text-gray-300 leading-relaxed font-body">
                     {game.description}
@@ -327,6 +386,21 @@ const GamePage = () => {
                       {formatDate(game.release_date)}
                     </div>
                     <p className="text-gray-400 font-body">Global market launch</p>
+                  </div>
+                </div>
+
+                {/* Game Configuration */}
+                <div className="bg-black/30 p-8 rounded-xl border border-gray-800 max-w-4xl mx-auto">
+                  <h3 className="text-2xl font-heading font-bold text-white mb-6">Game Configuration</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Reel Layout</h4>
+                      <p className="text-white text-xl font-heading">{game.reels_rows}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Free Spins</h4>
+                      <p className="text-white text-xl font-heading">{game.free_spins}</p>
+                    </div>
                   </div>
                 </div>
               </div>
