@@ -241,7 +241,7 @@ const GamePage = () => {
               </Link>
             </div>
 
-            {/* Game Content - This is the main content that should appear */}
+            {/* Game Content */}
             <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Game Info */}
               <div className="space-y-8">
@@ -254,8 +254,8 @@ const GamePage = () => {
                   </p>
                 </div>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Expanded Stats Grid - Now includes 6 items */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
                     <div className="text-sm text-gray-400 uppercase tracking-wider font-body">RTP</div>
@@ -271,6 +271,14 @@ const GamePage = () => {
                   <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-brand-orange font-heading">{game.hit_frequency}</div>
                     <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Hit Rate</div>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
+                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.reels_rows}</div>
+                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Reel Layout</div>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
+                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.free_spins}</div>
+                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Free Spins</div>
                   </div>
                 </div>
 
@@ -385,21 +393,6 @@ const GamePage = () => {
                       {formatDate(game.release_date)}
                     </div>
                     <p className="text-gray-400 font-body">Global market launch</p>
-                  </div>
-                </div>
-
-                {/* Game Configuration */}
-                <div className="bg-black/30 p-8 rounded-xl border border-gray-800 max-w-4xl mx-auto">
-                  <h3 className="text-2xl font-heading font-bold text-white mb-6">Game Configuration</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Reel Layout</h4>
-                      <p className="text-white text-xl font-heading">{game.reels_rows}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Free Spins</h4>
-                      <p className="text-white text-xl font-heading">{game.free_spins}</p>
-                    </div>
                   </div>
                 </div>
               </div>
