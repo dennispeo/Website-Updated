@@ -210,7 +210,7 @@ const GamePage = () => {
   return (
     <>
       <div className="min-h-screen bg-brand-dark-gradient">
-        {/* Hero Section */}
+        {/* Hero Section with All Game Data */}
         <section className="relative pt-20 pb-12 overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
@@ -241,10 +241,11 @@ const GamePage = () => {
               </Link>
             </div>
 
-            {/* Game Content - This is the main content that should appear */}
-            <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              {/* Game Info */}
+            {/* Main Game Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start mb-16">
+              {/* Left Column - Game Info */}
               <div className="space-y-8">
+                {/* Game Title */}
                 <div>
                   <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-4">
                     {titleParts.main}{titleParts.sub && <>: <span className="text-brand-orange">{titleParts.sub}</span></>}
@@ -254,7 +255,7 @@ const GamePage = () => {
                   </p>
                 </div>
 
-                {/* Quick Stats */}
+                {/* Quick Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
@@ -274,22 +275,6 @@ const GamePage = () => {
                   </div>
                 </div>
 
-                {/* Betting Range */}
-                <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-                  <h3 className="text-lg font-heading font-bold text-white mb-4">Betting Range</h3>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xl font-bold text-brand-orange font-heading">{game.min_bet}</div>
-                      <div className="text-sm text-gray-400 font-body">Minimum Bet</div>
-                    </div>
-                    <div className="text-gray-400">—</div>
-                    <div>
-                      <div className="text-xl font-bold text-brand-orange font-heading">{game.max_bet}</div>
-                      <div className="text-sm text-gray-400 font-body">Maximum Bet</div>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body">
@@ -303,7 +288,7 @@ const GamePage = () => {
                 </div>
               </div>
 
-              {/* Game Preview */}
+              {/* Right Column - Game Preview */}
               <div className="relative">
                 <div className="bg-black/20 p-8 rounded-2xl border border-gray-800 backdrop-blur-sm">
                   {game.image_url ? (
@@ -322,6 +307,55 @@ const GamePage = () => {
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Game Information Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              {/* Betting Range */}
+              <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
+                <h3 className="text-lg font-heading font-bold text-brand-orange mb-4">Betting Range</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-xl font-bold text-white font-heading">{game.min_bet}</div>
+                    <div className="text-sm text-gray-400 font-body">Minimum</div>
+                  </div>
+                  <div className="text-gray-400">—</div>
+                  <div>
+                    <div className="text-xl font-bold text-white font-heading">{game.max_bet}</div>
+                    <div className="text-sm text-gray-400 font-body">Maximum</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Game Configuration */}
+              <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
+                <h3 className="text-lg font-heading font-bold text-brand-orange mb-4">Game Layout</h3>
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-xl font-bold text-white font-heading">{game.reels_rows}</div>
+                    <div className="text-sm text-gray-400 font-body">Reel Configuration</div>
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-white font-heading">{game.free_spins}</div>
+                    <div className="text-sm text-gray-400 font-body">Free Spins Trigger</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Release Timeline */}
+              <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
+                <h3 className="text-lg font-heading font-bold text-brand-orange mb-4">Release Info</h3>
+                <div className="space-y-3">
+                  <div>
+                    <div className="text-lg font-bold text-white font-heading">{formatDate(game.early_access_date)}</div>
+                    <div className="text-sm text-gray-400 font-body">Early Access</div>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-white font-heading">{formatDate(game.release_date)}</div>
+                    <div className="text-sm text-gray-400 font-body">Full Release</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -363,51 +397,37 @@ const GamePage = () => {
                 {/* Game Description */}
                 <div className="max-w-4xl mx-auto text-center">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    {game.title}
+                    About {game.title}
                   </h2>
                   <p className="text-lg text-gray-300 leading-relaxed font-body">
                     {game.description}
                   </p>
                 </div>
 
-                {/* Release Timeline */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                  <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                    <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Early Access</h3>
-                    <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {formatDate(game.early_access_date)}
+                {/* Additional Game Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    { label: 'Return to Player', value: game.rtp, description: 'Theoretical return percentage' },
+                    { label: 'Volatility Level', value: game.volatility, description: 'Risk and reward balance' },
+                    { label: 'Hit Frequency', value: game.hit_frequency, description: 'Winning spin probability' },
+                    { label: 'Maximum Win', value: game.max_win, description: 'Highest possible payout' }
+                  ].map((detail, index) => (
+                    <div
+                      key={detail.label}
+                      className="bg-black/30 p-6 rounded-xl border border-gray-800"
+                    >
+                      <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">{detail.value}</div>
+                      <div className="text-lg font-semibold text-white mb-2 font-heading">{detail.label}</div>
+                      <div className="text-sm text-gray-400 font-body">{detail.description}</div>
                     </div>
-                    <p className="text-gray-400 font-body">Exclusive partner preview</p>
-                  </div>
-                  <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                    <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Full Release</h3>
-                    <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {formatDate(game.release_date)}
-                    </div>
-                    <p className="text-gray-400 font-body">Global market launch</p>
-                  </div>
-                </div>
-
-                {/* Game Configuration */}
-                <div className="bg-black/30 p-8 rounded-xl border border-gray-800 max-w-4xl mx-auto">
-                  <h3 className="text-2xl font-heading font-bold text-white mb-6">Game Configuration</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Reel Layout</h4>
-                      <p className="text-white text-xl font-heading">{game.reels_rows}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-brand-orange mb-3 font-body">Free Spins</h4>
-                      <p className="text-white text-xl font-heading">{game.free_spins}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             )}
 
             {/* Mechanics Tab */}
             {activeTab === 'mechanics' && (
-              <div ref={mechanicsRef}>
+              <div>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
                     Game <span className="text-brand-orange">Mechanics</span>
@@ -460,7 +480,7 @@ const GamePage = () => {
 
             {/* Statistics Tab */}
             {activeTab === 'statistics' && (
-              <div ref={statsRef}>
+              <div>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
                     Game <span className="text-brand-orange">Statistics</span>
