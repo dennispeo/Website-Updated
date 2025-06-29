@@ -27,6 +27,7 @@ const Games = () => {
     max_bet: '€100.00',
     release_date: '2025-03-25',
     early_access_date: '2025-03-17',
+    features: 'wavE',
     created_at: '2025-01-01',
     updated_at: '2025-01-01'
   };
@@ -108,6 +109,7 @@ const Games = () => {
     max_bet: '',
     release_date: '',
     early_access_date: '',
+    features: '',
     created_at: '',
     updated_at: ''
   };

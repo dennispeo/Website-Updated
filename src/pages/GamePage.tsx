@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Play, Download, Info, Zap, Target, TrendingUp, Shield, Gamepad2, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Play, Download } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
 import { supabase, Game } from '../lib/supabase';
 import Footer from '../components/Footer';
 
 const GamePage = () => {
-  const [activeTab, setActiveTab] = useState('overview');
   const [heroRef, heroInView] = useInView();
-  const [statsRef, statsInView] = useInView();
-  const [mechanicsRef, mechanicsInView] = useInView();
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -100,53 +97,6 @@ const GamePage = () => {
     }
   };
 
-  // Dynamic mechanics based on game data - purely from database
-  const getMechanics = (game: Game) => {
-    const mechanics = [];
-
-    // Add mechanics based on game characteristics
-    if (game.volatility === 'High') {
-      mechanics.push({
-        name: 'High Volatility System',
-        description: `Experience ${game.volatility.toLowerCase()} volatility gameplay with potential for massive wins up to ${game.max_win}`,
-        icon: <TrendingUp className="text-brand-orange" size={24} />
-      });
-    } else {
-      mechanics.push({
-        name: `${game.volatility} Volatility`,
-        description: `Balanced ${game.volatility.toLowerCase()} volatility gameplay designed for consistent entertainment`,
-        icon: <TrendingUp className="text-brand-orange" size={24} />
-      });
-    }
-
-    mechanics.push({
-      name: 'Advanced RTP',
-      description: `Optimized ${game.rtp} return-to-player rate ensuring fair and competitive gameplay`,
-      icon: <BarChart3 className="text-brand-orange" size={24} />
-    });
-
-    mechanics.push({
-      name: 'Hit Frequency',
-      description: `${game.hit_frequency} hit frequency provides regular winning opportunities`,
-      icon: <Target className="text-brand-orange" size={24} />
-    });
-
-    mechanics.push({
-      name: 'Bonus Features',
-      description: `Free spins trigger ${game.free_spins} with exciting bonus rounds and multipliers`,
-      icon: <Zap className="text-brand-orange" size={24} />
-    });
-
-    return mechanics;
-  };
-
-  const getFeatures = (game: Game) => [
-    { label: 'RTP', value: game.rtp, icon: <BarChart3 size={16} /> },
-    { label: 'Volatility', value: game.volatility, icon: <TrendingUp size={16} /> },
-    { label: 'Max Win', value: game.max_win, icon: <Target size={16} /> },
-    { label: 'Reels Layout', value: game.reels_rows, icon: <Gamepad2 size={16} /> }
-  ];
-
   // Helper function to safely format dates
   const formatDate = (dateString: string) => {
     if (!dateString) return 'TBA';
@@ -204,8 +154,6 @@ const GamePage = () => {
   }
 
   const titleParts = getTitleParts(game.title);
-  const mechanics = getMechanics(game);
-  const features = getFeatures(game);
 
   return (
     <>
@@ -254,8 +202,8 @@ const GamePage = () => {
                   </p>
                 </div>
 
-                {/* Expanded Stats Grid - Now includes 6 items */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Expanded Stats Grid - Now includes 7 items with Features */}
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
                     <div className="text-sm text-gray-400 uppercase tracking-wider font-body">RTP</div>
@@ -279,6 +227,10 @@ const GamePage = () => {
                   <div className="bg-black/40 p-4 rounded-lg border border-gray-800">
                     <div className="text-2xl font-bold text-brand-orange font-heading">{game.free_spins}</div>
                     <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Free Spins</div>
+                  </div>
+                  <div className="bg-black/40 p-4 rounded-lg border border-gray-800 col-span-2 md:col-span-1">
+                    <div className="text-2xl font-bold text-brand-orange font-heading">{game.features || 'Standard'}</div>
+                    <div className="text-sm text-gray-400 uppercase tracking-wider font-body">Features</div>
                   </div>
                 </div>
 
@@ -336,157 +288,59 @@ const GamePage = () => {
           </div>
         </section>
 
-        {/* Navigation Tabs */}
-        <section className="sticky top-16 z-40 bg-brand-dark/90 backdrop-blur-sm border-b border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex space-x-8 overflow-x-auto">
-              {[
-                { id: 'overview', label: 'Overview', icon: <Info size={18} /> },
-                { id: 'mechanics', label: 'Mechanics', icon: <Zap size={18} /> },
-                { id: 'statistics', label: 'Statistics', icon: <BarChart3 size={18} /> }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-2 border-b-2 transition-all duration-300 font-body whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? 'border-brand-orange text-brand-orange'
-                      : 'border-transparent text-gray-400 hover:text-white'
-                  }`}
-                >
-                  {tab.icon}
-                  <span className="font-semibold uppercase tracking-wider">{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Content Sections */}
+        {/* Game Details Section */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Overview Tab */}
-            {activeTab === 'overview' && (
-              <div className="space-y-16">
-                {/* Game Description */}
-                <div className="max-w-4xl mx-auto text-center">
-                  <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    {game.title}
-                  </h2>
-                  <p className="text-lg text-gray-300 leading-relaxed font-body">
-                    {game.description}
-                  </p>
-                </div>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
+                Game <span className="text-brand-orange">Details</span>
+              </h2>
+              <p className="text-lg text-gray-300 max-w-3xl mx-auto font-body">
+                Complete technical specifications and release information for {game.title}.
+              </p>
+            </div>
 
-                {/* Release Timeline */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                  <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                    <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Early Access</h3>
-                    <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {formatDate(game.early_access_date)}
-                    </div>
-                    <p className="text-gray-400 font-body">Exclusive partner preview</p>
-                  </div>
-                  <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                    <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Full Release</h3>
-                    <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {formatDate(game.release_date)}
-                    </div>
-                    <p className="text-gray-400 font-body">Global market launch</p>
-                  </div>
+            {/* Release Timeline */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
+                <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Early Access</h3>
+                <div className="text-3xl font-bold text-white mb-2 font-heading">
+                  {formatDate(game.early_access_date)}
                 </div>
+                <p className="text-gray-400 font-body">Exclusive partner preview</p>
               </div>
-            )}
-
-            {/* Mechanics Tab */}
-            {activeTab === 'mechanics' && (
-              <div ref={mechanicsRef}>
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    Game <span className="text-brand-orange">Mechanics</span>
-                  </h2>
-                  <p className="text-lg text-gray-300 max-w-3xl mx-auto font-body">
-                    Advanced features designed to create engaging and rewarding gameplay experiences.
-                  </p>
+              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
+                <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Full Release</h3>
+                <div className="text-3xl font-bold text-white mb-2 font-heading">
+                  {formatDate(game.release_date)}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-                  {mechanics.map((mechanic, index) => (
-                    <div
-                      key={mechanic.name}
-                      className="bg-black/30 p-8 rounded-xl border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)]"
-                    >
-                      <div className="flex items-start space-x-4">
-                        <div className="flex-shrink-0 p-3 bg-brand-orange/10 rounded-lg">
-                          {mechanic.icon}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-heading font-bold text-white mb-3">
-                            {mechanic.name}
-                          </h3>
-                          <p className="text-gray-300 leading-relaxed font-body">
-                            {mechanic.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Features Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {features.map((feature, index) => (
-                    <div
-                      key={feature.label}
-                      className="bg-black/30 p-6 rounded-lg border border-gray-800 text-center"
-                    >
-                      <div className="flex justify-center mb-3 text-brand-orange">
-                        {feature.icon}
-                      </div>
-                      <div className="text-lg font-bold text-white mb-1 font-heading">{feature.value}</div>
-                      <div className="text-sm text-gray-400 font-body">{feature.label}</div>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-gray-400 font-body">Global market launch</p>
               </div>
-            )}
+            </div>
 
-            {/* Statistics Tab */}
-            {activeTab === 'statistics' && (
-              <div ref={statsRef}>
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    Game <span className="text-brand-orange">Statistics</span>
-                  </h2>
-                  <p className="text-lg text-gray-300 max-w-3xl mx-auto font-body">
-                    Comprehensive technical specifications and performance metrics.
-                  </p>
+            {/* Complete Statistics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                { label: 'Return to Player', value: game.rtp, description: 'Theoretical return percentage' },
+                { label: 'Volatility Level', value: game.volatility, description: 'Risk and reward balance' },
+                { label: 'Hit Frequency', value: game.hit_frequency, description: 'Winning spin probability' },
+                { label: 'Maximum Win', value: game.max_win, description: 'Highest possible payout' },
+                { label: 'Free Spins Trigger', value: game.free_spins, description: 'Bonus round frequency' },
+                { label: 'Reel Configuration', value: game.reels_rows, description: 'Game grid layout' },
+                { label: 'Minimum Bet', value: game.min_bet, description: 'Lowest stake amount' },
+                { label: 'Maximum Bet', value: game.max_bet, description: 'Highest stake amount' },
+                { label: 'Special Features', value: game.features || 'Standard', description: 'Unique game mechanics' }
+              ].map((stat, index) => (
+                <div
+                  key={stat.label}
+                  className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300"
+                >
+                  <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">{stat.value}</div>
+                  <div className="text-lg font-semibold text-white mb-2 font-heading">{stat.label}</div>
+                  <div className="text-sm text-gray-400 font-body">{stat.description}</div>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {[
-                    { label: 'Return to Player', value: game.rtp, description: 'Theoretical return percentage' },
-                    { label: 'Volatility Level', value: game.volatility, description: 'Risk and reward balance' },
-                    { label: 'Hit Frequency', value: game.hit_frequency, description: 'Winning spin probability' },
-                    { label: 'Maximum Win', value: game.max_win, description: 'Highest possible payout' },
-                    { label: 'Free Spins Trigger', value: game.free_spins, description: 'Bonus round frequency' },
-                    { label: 'Reel Configuration', value: game.reels_rows, description: 'Game grid layout' },
-                    { label: 'Minimum Bet', value: game.min_bet, description: 'Lowest stake amount' },
-                    { label: 'Maximum Bet', value: game.max_bet, description: 'Highest stake amount' },
-                    { label: 'Release Date', value: formatDate(game.release_date), description: 'Official launch date' }
-                  ].map((stat, index) => (
-                    <div
-                      key={stat.label}
-                      className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300"
-                    >
-                      <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">{stat.value}</div>
-                      <div className="text-lg font-semibold text-white mb-2 font-heading">{stat.label}</div>
-                      <div className="text-sm text-gray-400 font-body">{stat.description}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
         </section>
       </div>

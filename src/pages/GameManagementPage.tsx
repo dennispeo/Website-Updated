@@ -23,7 +23,8 @@ const GameManagementPage = () => {
     max_bet: '€50.00',
     release_date: '',
     early_access_date: '',
-    available: false
+    available: false,
+    features: ''
   });
 
   useEffect(() => {
@@ -92,7 +93,8 @@ const GameManagementPage = () => {
       max_bet: game.max_bet,
       release_date: game.release_date,
       early_access_date: game.early_access_date,
-      available: game.available
+      available: game.available,
+      features: game.features || ''
     });
     setShowForm(true);
   };
@@ -131,7 +133,8 @@ const GameManagementPage = () => {
       max_bet: '€50.00',
       release_date: '',
       early_access_date: '',
-      available: false
+      available: false,
+      features: ''
     });
   };
 
@@ -221,7 +224,7 @@ const GameManagementPage = () => {
                   {game.description}
                 </p>
                 
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-2 gap-4 text-sm mb-4">
                   <div>
                     <span className="text-gray-400 font-body">RTP:</span>
                     <span className="text-white ml-2 font-body">{game.rtp}</span>
@@ -229,6 +232,10 @@ const GameManagementPage = () => {
                   <div>
                     <span className="text-gray-400 font-body">Max Win:</span>
                     <span className="text-white ml-2 font-body">{game.max_win}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 font-body">Features:</span>
+                    <span className="text-white ml-2 font-body">{game.features || 'Standard'}</span>
                   </div>
                 </div>
                 
@@ -319,17 +326,32 @@ const GameManagementPage = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2 font-body">
-                  Image URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body"
-                  placeholder="https://example.com/image.jpg"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2 font-body">
+                    Image URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2 font-body">
+                    Features
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.features}
+                    onChange={(e) => setFormData({ ...formData, features: e.target.value })}
+                    className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body"
+                    placeholder="e.g., wavE, Megaways, etc."
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -27,6 +27,7 @@ export interface Game {
   release_date: string;
   early_access_date: string;
   available: boolean;
+  features: string;
   created_at: string;
   updated_at: string;
 }
