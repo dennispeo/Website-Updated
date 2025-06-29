@@ -72,7 +72,7 @@ const Hero = () => {
           isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`}>
           <button className="cta-button group relative px-8 py-4 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider rounded-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.5)] font-body">
-            <span className="relative z-10">Explore the Philosophy</span>
+            <span className="relative z-10">See Our Portfolio</span>
             <div className="absolute inset-0 bg-gradient-to-r from-brand-yellow to-brand-orange opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </div>
