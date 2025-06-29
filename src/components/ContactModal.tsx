@@ -20,7 +20,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   
   const modalRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
-  const { trackFormSubmit, trackContactForm } = useAnalytics();
+  const { trackFormSubmit } = useAnalytics();
 
   useEffect(() => {
     if (isOpen) {
@@ -84,9 +84,6 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
 
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Track conversion
-    trackContactForm(formData.inquiryType);
     
     setIsSubmitting(false);
     setIsSubmitted(true);

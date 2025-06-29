@@ -12,7 +12,7 @@ const GamePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { gameSlug } = useParams();
-  const { trackButtonClick, trackGameDemo, trackDownload } = useAnalytics();
+  const { trackButtonClick, trackDownload } = useAnalytics();
 
   useEffect(() => {
     fetchGame();
@@ -101,7 +101,6 @@ const GamePage = () => {
 
   const handlePlayDemo = () => {
     if (game) {
-      trackGameDemo(game.title);
       trackButtonClick('Play Demo', 'game-demo-button');
       // Here you would typically open the game demo
       alert('Demo functionality would be implemented here');

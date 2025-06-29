@@ -14,10 +14,6 @@ export const useAnalytics = () => {
     trackButtonClick: analytics.trackButtonClick.bind(analytics),
     trackFormSubmit: analytics.trackFormSubmit.bind(analytics),
     trackDownload: analytics.trackDownload.bind(analytics),
-    trackGameDemo: analytics.trackGameDemo.bind(analytics),
-    trackContactForm: analytics.trackContactForm.bind(analytics),
-    trackCareerApplication: analytics.trackCareerApplication.bind(analytics),
-    trackInteraction: analytics.trackInteraction.bind(analytics),
-    trackConversion: analytics.trackConversion.bind(analytics)
+    trackInteraction: analytics.trackInteraction.bind(analytics)
   };
 };

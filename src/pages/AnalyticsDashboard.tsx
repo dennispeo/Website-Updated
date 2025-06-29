@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BarChart3, TrendingUp, Users, Eye, Clock, MousePointer, Target, Globe, Smartphone, Monitor, Tablet } from 'lucide-react';
+import { ArrowLeft, BarChart3, TrendingUp, Users, Eye, Clock, MousePointer, Globe } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface UserBehaviorAnalytics {
@@ -21,21 +21,9 @@ interface UserBehaviorAnalytics {
   topPages: Array<{ page: string; views: number; avgTimeOnPage: number }>;
   topInteractions: Array<{ type: string; count: number; element: string }>;
   
-  // Conversion Metrics
-  totalConversions: number;
-  conversionRate: number;
-  topConversions: Array<{ type: string; count: number; rate: number }>;
-  
-  // Device & Browser Analytics
-  deviceBreakdown: Array<{ device: string; count: number; percentage: number }>;
-  browserBreakdown: Array<{ browser: string; count: number; percentage: number }>;
-  
-  // Geographic Data
-  topCountries: Array<{ country: string; sessions: number; percentage: number }>;
-  
   // Traffic Sources
   topReferrers: Array<{ referrer: string; sessions: number; percentage: number }>;
-  utmSources: Array<{ source: string; sessions: number; conversions: number }>;
+  utmSources: Array<{ source: string; sessions: number }>;
   
   // User Journey
   entryPages: Array<{ page: string; sessions: number; bounceRate: number }>;
@@ -66,8 +54,7 @@ const AnalyticsDashboard = () => {
       const [
         pageViewsResult,
         interactionsResult,
-        sessionsResult,
-        conversionsResult
+        sessionsResult
       ] = await Promise.all([
         supabase
           .from('page_views')
@@ -80,22 +67,16 @@ const AnalyticsDashboard = () => {
         supabase
           .from('user_sessions')
           .select('*')
-          .gte('started_at', startDate.toISOString()),
-        supabase
-          .from('conversion_events')
-          .select('*')
-          .gte('created_at', startDate.toISOString())
+          .gte('started_at', startDate.toISOString())
       ]);
 
       if (pageViewsResult.error) throw pageViewsResult.error;
       if (interactionsResult.error) throw interactionsResult.error;
       if (sessionsResult.error) throw sessionsResult.error;
-      if (conversionsResult.error) throw conversionsResult.error;
 
       const pageViews = pageViewsResult.data || [];
       const interactions = interactionsResult.data || [];
       const sessions = sessionsResult.data || [];
-      const conversions = conversionsResult.data || [];
 
       // Calculate metrics
       const totalPageViews = pageViews.length;
@@ -170,64 +151,6 @@ const AnalyticsDashboard = () => {
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
 
-      // Conversion metrics
-      const totalConversions = conversions.length;
-      const conversionRate = totalSessions > 0
-        ? Math.round((totalConversions / totalSessions) * 100 * 10) / 10
-        : 0;
-
-      const conversionCounts = conversions.reduce((acc, conv) => {
-        acc[conv.event_type] = (acc[conv.event_type] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const topConversions = Object.entries(conversionCounts)
-        .map(([type, count]) => ({
-          type,
-          count,
-          rate: totalSessions > 0 ? Math.round((count / totalSessions) * 100 * 10) / 10 : 0
-        }))
-        .sort((a, b) => b.count - a.count);
-
-      // Device breakdown
-      const deviceCounts = sessions.reduce((acc, session) => {
-        const device = session.device_type || 'unknown';
-        acc[device] = (acc[device] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const deviceBreakdown = Object.entries(deviceCounts)
-        .map(([device, count]) => ({
-          device,
-          count,
-          percentage: Math.round((count / totalSessions) * 100)
-        }))
-        .sort((a, b) => b.count - a.count);
-
-      // Browser breakdown
-      const browserCounts = sessions.reduce((acc, session) => {
-        const browser = session.browser || 'unknown';
-        acc[browser] = (acc[browser] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
-
-      const browserBreakdown = Object.entries(browserCounts)
-        .map(([browser, count]) => ({
-          browser,
-          count,
-          percentage: Math.round((count / totalSessions) * 100)
-        }))
-        .sort((a, b) => b.count - a.count);
-
-      // Geographic data (mock for now - would need IP geolocation service)
-      const topCountries = [
-        { country: 'United States', sessions: Math.round(totalSessions * 0.4), percentage: 40 },
-        { country: 'United Kingdom', sessions: Math.round(totalSessions * 0.2), percentage: 20 },
-        { country: 'Germany', sessions: Math.round(totalSessions * 0.15), percentage: 15 },
-        { country: 'Canada', sessions: Math.round(totalSessions * 0.1), percentage: 10 },
-        { country: 'Other', sessions: Math.round(totalSessions * 0.15), percentage: 15 }
-      ].filter(country => country.sessions > 0);
-
       // Traffic sources
       const referrerCounts = sessions.reduce((acc, session) => {
         const referrer = session.referrer || 'Direct';
@@ -248,20 +171,16 @@ const AnalyticsDashboard = () => {
       const utmCounts = sessions.reduce((acc, session) => {
         const source = session.utm_source || 'organic';
         if (!acc[source]) {
-          acc[source] = { sessions: 0, conversions: 0 };
+          acc[source] = { sessions: 0 };
         }
         acc[source].sessions++;
-        if (session.conversion) {
-          acc[source].conversions++;
-        }
         return acc;
-      }, {} as Record<string, { sessions: number; conversions: number }>);
+      }, {} as Record<string, { sessions: number }>);
 
       const utmSources = Object.entries(utmCounts)
         .map(([source, data]) => ({
           source,
-          sessions: data.sessions,
-          conversions: data.conversions
+          sessions: data.sessions
         }))
         .sort((a, b) => b.sessions - a.sessions);
 
@@ -314,12 +233,6 @@ const AnalyticsDashboard = () => {
         averageScrollDepth,
         topPages,
         topInteractions,
-        totalConversions,
-        conversionRate,
-        topConversions,
-        deviceBreakdown,
-        browserBreakdown,
-        topCountries,
         topReferrers,
         utmSources,
         entryPages,
@@ -349,15 +262,6 @@ const AnalyticsDashboard = () => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
-  };
-
-  const getDeviceIcon = (device: string) => {
-    switch (device.toLowerCase()) {
-      case 'mobile': return <Smartphone size={16} />;
-      case 'tablet': return <Tablet size={16} />;
-      case 'desktop': return <Monitor size={16} />;
-      default: return <Monitor size={16} />;
-    }
   };
 
   if (loading) {
@@ -483,21 +387,6 @@ const AnalyticsDashboard = () => {
 
               <div className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                    <Target className="text-orange-400" size={24} />
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-white font-heading">{analytics.totalConversions}</div>
-                    <div className="text-sm text-gray-400 font-body">Conversions</div>
-                  </div>
-                </div>
-                <div className="text-xs text-gray-500 font-body">
-                  {analytics.conversionRate}% conversion rate
-                </div>
-              </div>
-
-              <div className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
                     <TrendingUp className="text-red-400" size={24} />
                   </div>
@@ -508,6 +397,21 @@ const AnalyticsDashboard = () => {
                 </div>
                 <div className="text-xs text-gray-500 font-body">
                   {analytics.averageScrollDepth}% avg scroll depth
+                </div>
+              </div>
+
+              <div className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                    <Clock className="text-orange-400" size={24} />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-white font-heading">{formatDuration(analytics.averageTimeOnPage)}</div>
+                    <div className="text-sm text-gray-400 font-body">Avg Time on Page</div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-500 font-body">
+                  User engagement metric
                 </div>
               </div>
             </div>
@@ -570,91 +474,6 @@ const AnalyticsDashboard = () => {
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
-
-            {/* Device & Browser Analytics */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-              {/* Device Breakdown */}
-              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                <h3 className="text-xl font-heading font-bold text-white mb-6 flex items-center space-x-2">
-                  <Smartphone className="text-brand-orange" size={20} />
-                  <span>Device Types</span>
-                </h3>
-                
-                <div className="space-y-4">
-                  {analytics.deviceBreakdown.map((device, index) => (
-                    <div key={device.device} className="flex items-center justify-between p-4 bg-black/40 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="text-brand-orange">
-                          {getDeviceIcon(device.device)}
-                        </div>
-                        <div>
-                          <div className="text-white font-body font-semibold capitalize">{device.device}</div>
-                          <div className="text-gray-400 text-sm font-body">
-                            {device.count.toLocaleString()} sessions
-                          </div>
-                        </div>
-                      </div>
-                      <span className="text-brand-orange font-bold font-heading">
-                        {device.percentage}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Browser Breakdown */}
-              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
-                <h3 className="text-xl font-heading font-bold text-white mb-6 flex items-center space-x-2">
-                  <Globe className="text-brand-orange" size={20} />
-                  <span>Browsers</span>
-                </h3>
-                
-                <div className="space-y-4">
-                  {analytics.browserBreakdown.slice(0, 5).map((browser, index) => (
-                    <div key={browser.browser} className="flex items-center justify-between p-4 bg-black/40 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 font-bold text-sm">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <div className="text-white font-body font-semibold capitalize">{browser.browser}</div>
-                          <div className="text-gray-400 text-sm font-body">
-                            {browser.count.toLocaleString()} sessions
-                          </div>
-                        </div>
-                      </div>
-                      <span className="text-blue-400 font-bold font-heading">
-                        {browser.percentage}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Conversion Funnel */}
-            <div className="bg-black/30 p-8 rounded-xl border border-gray-800 mb-12">
-              <h3 className="text-xl font-heading font-bold text-white mb-6 flex items-center space-x-2">
-                <Target className="text-brand-orange" size={20} />
-                <span>Conversion Events</span>
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {analytics.topConversions.map((conversion, index) => (
-                  <div key={conversion.type} className="text-center p-6 bg-black/40 rounded-lg">
-                    <div className="text-3xl font-bold text-brand-orange mb-2 font-heading">
-                      {conversion.count}
-                    </div>
-                    <div className="text-white font-body font-semibold capitalize mb-1">
-                      {conversion.type.replace('_', ' ')}
-                    </div>
-                    <div className="text-sm text-gray-400 font-body">
-                      {conversion.rate}% conversion rate
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
 

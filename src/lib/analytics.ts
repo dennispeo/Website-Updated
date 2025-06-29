@@ -9,9 +9,6 @@ interface PageViewData {
   userAgent?: string;
   ipAddress?: string;
   country?: string;
-  deviceType?: string;
-  browser?: string;
-  os?: string;
   screenResolution?: string;
   viewportSize?: string;
 }
@@ -28,14 +25,6 @@ interface InteractionData {
   buttonText?: string;
   positionX?: number;
   positionY?: number;
-}
-
-interface ConversionData {
-  sessionId: string;
-  eventType: string;
-  eventValue?: string;
-  pagePath: string;
-  funnelStep?: number;
 }
 
 class Analytics {
@@ -58,29 +47,8 @@ class Analytics {
 
   private getDeviceInfo() {
     const userAgent = navigator.userAgent;
-    const screenWidth = screen.width;
     
-    let deviceType = 'desktop';
-    if (screenWidth <= 768) deviceType = 'mobile';
-    else if (screenWidth <= 1024) deviceType = 'tablet';
-
-    let browser = 'unknown';
-    if (userAgent.includes('Chrome')) browser = 'chrome';
-    else if (userAgent.includes('Firefox')) browser = 'firefox';
-    else if (userAgent.includes('Safari')) browser = 'safari';
-    else if (userAgent.includes('Edge')) browser = 'edge';
-
-    let os = 'unknown';
-    if (userAgent.includes('Windows')) os = 'windows';
-    else if (userAgent.includes('Mac')) os = 'macos';
-    else if (userAgent.includes('Linux')) os = 'linux';
-    else if (userAgent.includes('Android')) os = 'android';
-    else if (userAgent.includes('iOS')) os = 'ios';
-
     return {
-      device_type: deviceType,
-      browser,
-      os,
       screen_resolution: `${screen.width}x${screen.height}`,
       viewport_size: `${window.innerWidth}x${window.innerHeight}`,
       user_agent: userAgent
@@ -156,32 +124,8 @@ class Analytics {
     }
   }
 
-  async trackConversion(data: Omit<ConversionData, 'sessionId' | 'pagePath'>) {
-    try {
-      const conversionData = {
-        session_id: this.sessionId,
-        page_path: window.location.pathname,
-        ...data
-      };
-
-      await supabase.from('conversion_events').insert([conversionData]);
-      
-      // Mark session as converted
-      await supabase
-        .from('user_sessions')
-        .update({ 
-          conversion: true, 
-          conversion_type: data.eventType 
-        })
-        .eq('session_id', this.sessionId);
-    } catch (error) {
-      console.warn('Conversion tracking failed:', error);
-    }
-  }
-
   private async updateSession() {
     try {
-      const deviceInfo = this.getDeviceInfo();
       const urlParams = new URLSearchParams(window.location.search);
       
       const sessionData = {
@@ -192,8 +136,7 @@ class Analytics {
         referrer: document.referrer || null,
         utm_source: urlParams.get('utm_source'),
         utm_medium: urlParams.get('utm_medium'),
-        utm_campaign: urlParams.get('utm_campaign'),
-        ...deviceInfo
+        utm_campaign: urlParams.get('utm_campaign')
       };
 
       // Try to update existing session, or insert new one
@@ -234,30 +177,6 @@ class Analytics {
       interactionType: 'download',
       elementText: fileName,
       targetUrl: downloadUrl
-    });
-  }
-
-  trackGameDemo(gameTitle: string) {
-    this.trackConversion({
-      eventType: 'game_demo',
-      eventValue: gameTitle,
-      funnelStep: 1
-    });
-  }
-
-  trackContactForm(inquiryType: string) {
-    this.trackConversion({
-      eventType: 'contact_form',
-      eventValue: inquiryType,
-      funnelStep: 2
-    });
-  }
-
-  trackCareerApplication(position: string) {
-    this.trackConversion({
-      eventType: 'career_apply',
-      eventValue: position,
-      funnelStep: 3
     });
   }
 
