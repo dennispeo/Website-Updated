@@ -56,11 +56,23 @@ function App() {
           </>
         } />
         
-        {/* Admin Routes - Temporarily without authentication */}
+        {/* Admin Routes - Now with proper authentication */}
         <Route path="/admin/login" element={<AdminLoginPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/games" element={<GameManagementPage />} />
-        <Route path="/admin/news" element={<NewsManagementPage />} />
+        <Route path="/admin" element={
+          <ProtectedRoute requireAdmin={true}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/games" element={
+          <ProtectedRoute requireAdmin={true}>
+            <GameManagementPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/news" element={
+          <ProtectedRoute requireAdmin={true}>
+            <NewsManagementPage />
+          </ProtectedRoute>
+        } />
       </Routes>
     </div>
   );

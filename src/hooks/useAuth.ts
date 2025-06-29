@@ -5,42 +5,122 @@ import { supabase, Profile } from '../lib/supabase';
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(false); // Set to false to avoid loading states
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Temporarily bypass all auth checks
-    // Create a mock user and profile for testing
-    const mockUser = {
-      id: 'mock-admin-id',
-      email: 'admin@playeola.com',
-    } as User;
+    // Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
+        }
 
-    const mockProfile = {
-      id: 'mock-admin-id',
-      email: 'admin@playeola.com',
-      is_admin: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    } as Profile;
+        if (session?.user) {
+          setUser(session.user);
+          await fetchUserProfile(session.user.id);
+        }
+      } catch (error) {
+        console.error('Error in getInitialSession:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setUser(mockUser);
-    setProfile(mockProfile);
-    setLoading(false);
+    getInitialSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (session?.user) {
+          setUser(session.user);
+          await fetchUserProfile(session.user.id);
+        } else {
+          setUser(null);
+          setProfile(null);
+        }
+        
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      setProfile(data);
+    } catch (error) {
+      console.error('Error in fetchUserProfile:', error);
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
-    // Mock successful sign in
-    return { data: { user: user }, error: null };
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Sign in error:', error);
+        return { data: null, error };
+      }
+
+      // Profile will be fetched automatically by the auth state change listener
+      return { data, error: null };
+    } catch (error) {
+      console.error('Sign in catch error:', error);
+      return { 
+        data: null, 
+        error: { message: 'An unexpected error occurred during sign in' } 
+      };
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signOut = async () => {
-    // Mock sign out
-    setUser(null);
-    setProfile(null);
-    return { error: null };
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Sign out error:', error);
+        return { error };
+      }
+
+      // Clear state immediately
+      setUser(null);
+      setProfile(null);
+      
+      return { error: null };
+    } catch (error) {
+      console.error('Sign out catch error:', error);
+      return { error: { message: 'An unexpected error occurred during sign out' } };
+    }
   };
 
-  const isAdmin = profile?.is_admin ?? true; // Always true for testing
+  const isAdmin = profile?.is_admin ?? false;
 
   return {
     user,

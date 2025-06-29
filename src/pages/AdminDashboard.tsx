@@ -8,6 +8,7 @@ const AdminDashboard = () => {
 
   const handleSignOut = async () => {
     await signOut();
+    // Navigation will happen automatically via the auth state change
   };
 
   const dashboardCards = [
@@ -62,7 +63,7 @@ const AdminDashboard = () => {
             
             <div className="flex items-center space-x-4">
               <div className="text-white font-body">
-                Welcome, {profile?.email}
+                Welcome, {profile?.email || user?.email}
               </div>
               <button
                 onClick={handleSignOut}
@@ -127,7 +128,9 @@ const AdminDashboard = () => {
           </div>
           
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">1</div>
+            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">
+              {profile?.is_admin ? '1' : '0'}
+            </div>
             <div className="text-white font-semibold mb-1 font-body">Admin Users</div>
             <div className="text-gray-400 text-sm font-body">Total administrators</div>
           </div>

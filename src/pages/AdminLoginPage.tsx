@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 const AdminLoginPage = () => {
@@ -14,6 +14,7 @@ const AdminLoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Redirect if already logged in
     if (user) {
       navigate('/admin');
     }
@@ -24,15 +25,19 @@ const AdminLoginPage = () => {
     setLoading(true);
     setError('');
 
-    const { error } = await signIn(email, password);
+    try {
+      const { error } = await signIn(email, password);
 
-    if (error) {
-      setError(error.message);
-    } else {
-      navigate('/admin');
+      if (error) {
+        setError(error.message || 'Invalid email or password');
+      } else {
+        // Navigation will happen automatically via useEffect when user state updates
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -67,7 +72,10 @@ const AdminLoginPage = () => {
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-6">
-              <p className="text-red-400 text-sm font-body">{error}</p>
+              <div className="flex items-center space-x-2">
+                <AlertCircle className="text-red-400 flex-shrink-0" size={18} />
+                <p className="text-red-400 text-sm font-body">{error}</p>
+              </div>
             </div>
           )}
 
@@ -112,7 +120,8 @@ const AdminLoginPage = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200"
+                  disabled={loading}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200 disabled:opacity-50"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
