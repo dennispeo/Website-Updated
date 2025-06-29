@@ -7,6 +7,8 @@ interface PageViewData {
   pageTitle: string;
   referrer?: string;
   userAgent?: string;
+  ipAddress?: string;
+  country?: string;
   deviceType?: string;
   browser?: string;
   os?: string;
@@ -57,7 +59,6 @@ class Analytics {
   private getDeviceInfo() {
     const userAgent = navigator.userAgent;
     const screenWidth = screen.width;
-    const viewportWidth = window.innerWidth;
     
     let deviceType = 'desktop';
     if (screenWidth <= 768) deviceType = 'mobile';
@@ -77,12 +78,12 @@ class Analytics {
     else if (userAgent.includes('iOS')) os = 'ios';
 
     return {
-      deviceType,
+      device_type: deviceType,
       browser,
       os,
-      screenResolution: `${screen.width}x${screen.height}`,
-      viewportSize: `${window.innerWidth}x${window.innerHeight}`,
-      userAgent
+      screen_resolution: `${screen.width}x${screen.height}`,
+      viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+      user_agent: userAgent
     };
   }
 
@@ -129,8 +130,7 @@ class Analytics {
         referrer: document.referrer || null,
         time_on_page: additionalData.timeOnPage || null,
         scroll_depth: additionalData.scrollDepth || null,
-        ...deviceInfo,
-        ...additionalData
+        ...deviceInfo
       };
 
       await supabase.from('page_views').insert([pageViewData]);
