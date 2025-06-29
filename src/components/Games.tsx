@@ -35,12 +35,16 @@ const Games = () => {
     fetchGames();
   }, []);
 
+  // Add useEffect to log games state changes
+  useEffect(() => {
+    console.log('🎮 Games state updated:', games);
+  }, [games]);
+
   const fetchGames = async () => {
     console.log('🎮 fetchGames started');
     
-    // Always start with Zeus game to ensure it's visible
-    setGames([zeusGame]);
-    console.log('🎮 Initial Zeus game set:', [zeusGame]);
+    // Initialize with fallback data
+    let finalGames: Game[] = [zeusGame];
     
     try {
       console.log('🎮 Attempting to fetch from Supabase...');
@@ -53,37 +57,37 @@ const Games = () => {
       if (error) {
         console.log('🎮 Supabase error occurred:', error);
         console.log('🎮 Using fallback data (Zeus game only)');
-        // Keep Zeus game as fallback
+        // finalGames already set to [zeusGame]
       } else if (data && data.length > 0) {
         console.log('🎮 Supabase data received:', data);
-        // Use Supabase data but ensure Zeus is included
+        
+        // Check if Zeus is already in the Supabase data
         const hasZeus = data.some(game => game.title.includes('Zeus'));
         console.log('🎮 Does Supabase data include Zeus?', hasZeus);
         
         if (hasZeus) {
-          console.log('🎮 Setting games to Supabase data:', data);
-          setGames(data);
+          console.log('🎮 Using Supabase data (includes Zeus)');
+          finalGames = data;
         } else {
-          console.log('🎮 Adding Zeus to Supabase data:', [zeusGame, ...data]);
-          setGames([zeusGame, ...data]);
+          console.log('🎮 Adding Zeus to Supabase data');
+          finalGames = [zeusGame, ...data];
         }
       } else {
-        console.log('🎮 No data from Supabase, keeping Zeus game');
+        console.log('🎮 No data from Supabase, using Zeus game only');
+        // finalGames already set to [zeusGame]
       }
-      // If no data from Supabase, Zeus game is already set
     } catch (error) {
       console.log('🎮 Error fetching games:', error);
-      console.log('🎮 Using fallback (Zeus game already set)');
-      // Zeus game is already set as fallback
+      console.log('🎮 Using fallback (Zeus game only)');
+      // finalGames already set to [zeusGame]
     } finally {
-      console.log('🎮 Setting loading to false');
-      console.log('🎮 Final games array before setLoading(false):', games);
+      console.log('🎮 Final games array to set:', finalGames);
+      
+      // Single state update with final data
+      setGames(finalGames);
       setLoading(false);
       
-      // Log the games state after a brief delay to see the actual state
-      setTimeout(() => {
-        console.log('🎮 Games state after setLoading(false):', games);
-      }, 100);
+      console.log('🎮 State updates completed');
     }
   };
 
