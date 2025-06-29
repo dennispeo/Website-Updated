@@ -35,7 +35,7 @@ const Hero = () => {
           preload="auto"
         >
           <source 
-            src="https://www-live.hacksawgaming.com/teaser_videos/1_Videowebsite-OPTIMIZED-LANDSCAPE_16_8_1920x1080.mp4" 
+            src="https://player.vimeo.com/video/1096592653h=9b537adadc&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
             type="video/mp4" 
           />
           Your browser does not support the video tag.
