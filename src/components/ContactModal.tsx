@@ -11,6 +11,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     name: '',
     company: '',
     email: '',
+    inquiryType: 'Operator',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +65,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen, onClose]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -85,7 +86,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     // Reset form after showing success message
     setTimeout(() => {
       setIsSubmitted(false);
-      setFormData({ name: '', company: '', email: '', message: '' });
+      setFormData({ name: '', company: '', email: '', inquiryType: 'Operator', message: '' });
       onClose();
     }, 2000);
   };
@@ -94,7 +95,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     if (!isSubmitting) {
       onClose();
       setIsSubmitted(false);
-      setFormData({ name: '', company: '', email: '', message: '' });
+      setFormData({ name: '', company: '', email: '', inquiryType: 'Operator', message: '' });
     }
   };
 
@@ -219,6 +220,27 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     placeholder="your.email@company.com"
                   />
                 </div>
+              </div>
+
+              {/* Inquiry Type Field */}
+              <div>
+                <label htmlFor="inquiryType" className="block text-sm font-semibold text-brand-orange uppercase tracking-wider mb-2 font-body">
+                  Inquiry Type *
+                </label>
+                <select
+                  id="inquiryType"
+                  name="inquiryType"
+                  value={formData.inquiryType}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isSubmitting}
+                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body disabled:opacity-50"
+                >
+                  <option value="Operator">Operator</option>
+                  <option value="Platform">Platform</option>
+                  <option value="Affiliate">Affiliate</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
 
               {/* Message Field */}
