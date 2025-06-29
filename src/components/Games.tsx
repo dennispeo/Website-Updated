@@ -146,61 +146,79 @@ const Games = () => {
         {/* Game Cards */}
         {!loading && (
           <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {allGames.map((game, index) => (
-              <div
-                key={game.id}
-                className={`game-card bg-black/30 rounded-xl overflow-hidden border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)] ${
-                  cardsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                } ${!game.available ? 'opacity-60' : ''}`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                {/* Game Image */}
-                {game.image_url && (
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={game.image_url} 
-                      alt={game.title}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                      onError={(e) => {
-                        // Hide image container if it fails to load
-                        const container = e.currentTarget.parentElement;
-                        if (container) {
-                          container.style.display = 'none';
-                        }
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  </div>
-                )}
-
-                {/* Game Content */}
-                <div className="p-8">
-                  <h3 className="text-2xl font-heading font-bold text-white mb-4">
-                    {game.title}
-                  </h3>
-
-                  <p className="text-gray-300 leading-relaxed mb-8 font-body">
-                    {game.description}
-                  </p>
-                  
-                  {game.available && game.route ? (
-                    <Link
-                      to={game.route}
-                      className="block w-full py-3 px-6 border-2 border-white text-white hover:bg-white hover:text-brand-dark font-bold uppercase tracking-wider transition-all duration-300 rounded-lg font-body text-center"
-                    >
-                      Enter Game
-                    </Link>
-                  ) : (
-                    <button
-                      className="w-full py-3 px-6 border-2 border-gray-600 text-gray-600 cursor-not-allowed font-bold uppercase tracking-wider transition-all duration-300 rounded-lg font-body"
-                      disabled={!game.available}
-                    >
-                      Coming Soon
-                    </button>
+            {allGames.map((game, index) => {
+              console.log('🎮 Rendering game:', game.title, 'Available:', game.available);
+              
+              return (
+                <div
+                  key={game.id}
+                  className={`game-card bg-black/30 rounded-xl overflow-hidden border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)] ${
+                    cardsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                  } ${!game.available ? 'opacity-60' : ''}`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
+                  {/* Game Image */}
+                  {game.image_url && (
+                    <div className="relative h-48 overflow-hidden">
+                      <img 
+                        src={game.image_url} 
+                        alt={game.title}
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        onError={(e) => {
+                          console.log('🎮 Image failed to load for:', game.title);
+                          // Hide image container if it fails to load
+                          const container = e.currentTarget.parentElement;
+                          if (container) {
+                            container.style.display = 'none';
+                          }
+                        }}
+                        onLoad={() => {
+                          console.log('🎮 Image loaded successfully for:', game.title);
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
                   )}
+
+                  {/* Game Content */}
+                  <div className="p-8">
+                    <h3 className="text-2xl font-heading font-bold text-white mb-4">
+                      {game.title}
+                    </h3>
+
+                    <p className="text-gray-300 leading-relaxed mb-8 font-body">
+                      {game.description}
+                    </p>
+                    
+                    {game.available && game.route ? (
+                      <Link
+                        to={game.route}
+                        className="block w-full py-3 px-6 border-2 border-white text-white hover:bg-white hover:text-brand-dark font-bold uppercase tracking-wider transition-all duration-300 rounded-lg font-body text-center"
+                      >
+                        Enter Game
+                      </Link>
+                    ) : (
+                      <button
+                        className="w-full py-3 px-6 border-2 border-gray-600 text-gray-600 cursor-not-allowed font-bold uppercase tracking-wider transition-all duration-300 rounded-lg font-body"
+                        disabled={!game.available}
+                      >
+                        Coming Soon
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+        )}
+
+        {/* Debug Info */}
+        {!loading && allGames.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-red-400 font-body">No games found. Debug info:</p>
+            <p className="text-gray-400 font-body text-sm mt-2">
+              Games array length: {games.length}, Loading: {loading.toString()}
+            </p>
           </div>
         )}
       </div>
