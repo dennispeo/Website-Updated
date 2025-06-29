@@ -5,13 +5,14 @@ import { useInView } from '../hooks/useInView';
 import { supabase, Game } from '../lib/supabase';
 import Footer from '../components/Footer';
 
-const ZeusGamePage = () => {
+const GamePage = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [heroRef, heroInView] = useInView();
   const [statsRef, statsInView] = useInView();
   const [mechanicsRef, mechanicsInView] = useInView();
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { gameSlug } = useParams();
 
   useEffect(() => {
@@ -19,167 +20,99 @@ const ZeusGamePage = () => {
   }, [gameSlug]);
 
   const fetchGame = async () => {
-    console.log('🎮 ZeusGamePage: fetchGame started for slug:', gameSlug);
+    console.log('🎮 GamePage: fetchGame started for slug:', gameSlug);
     
-    // Define fallback Zeus data that matches the database structure
-    const fallbackZeusGame: Game = {
-      id: 'zeus-fallback',
-      title: 'Zeus: Clockwork Tyrant',
-      description: 'Enter an oppressive myth-tech world where ancient power meets mechanical precision. Experience the revolutionary wavE™ mechanic that transforms every spin into digital chaos.',
-      image_url: 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      route: '/games/zeus-clockwork-tyrant',
-      rtp: '96.06%',
-      volatility: 'High',
-      hit_frequency: '31.41%',
-      max_win: '99,999x',
-      free_spins: '1 in 249',
-      reels_rows: '3-2-3-2-3',
-      min_bet: '€0.20',
-      max_bet: '€100.00',
-      release_date: '2025-03-25',
-      early_access_date: '2025-03-17',
-      available: true,
-      created_at: '2025-01-01T00:00:00Z',
-      updated_at: '2025-01-01T00:00:00Z'
-    };
+    if (!gameSlug) {
+      setError('No game specified');
+      setLoading(false);
+      return;
+    }
 
     try {
-      console.log('🎮 ZeusGamePage: Attempting to fetch from Supabase...');
+      console.log('🎮 GamePage: Attempting to fetch from Supabase...');
       
-      // Try multiple approaches to find the game
-      const route = `/games/${gameSlug || 'zeus-clockwork-tyrant'}`;
-      console.log('🎮 ZeusGamePage: Looking for route:', route);
+      // Try to find game by route
+      const route = `/games/${gameSlug}`;
+      console.log('🎮 GamePage: Looking for route:', route);
       
-      // First try: exact route match
-      let { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('games')
         .select('*')
         .eq('route', route)
+        .eq('available', true)
         .single();
 
-      if (error || !data) {
-        console.log('🎮 ZeusGamePage: Route match failed, trying title search...');
+      if (fetchError || !data) {
+        console.log('🎮 GamePage: Route match failed, trying slug-based search...');
         
-        // Second try: search by title containing "Zeus"
+        // Try to find by slug in title (convert slug to title format)
+        const titleSearch = gameSlug
+          .split('-')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+        
         const { data: titleData, error: titleError } = await supabase
           .from('games')
           .select('*')
-          .ilike('title', '%Zeus%')
+          .ilike('title', `%${titleSearch}%`)
+          .eq('available', true)
           .single();
 
         if (titleError || !titleData) {
-          console.log('🎮 ZeusGamePage: Title search failed, trying any available game...');
-          
-          // Third try: get any available game
-          const { data: anyData, error: anyError } = await supabase
-            .from('games')
-            .select('*')
-            .eq('available', true)
-            .limit(1)
-            .single();
-
-          if (anyError || !anyData) {
-            throw new Error('No games found in database');
-          }
-          
-          data = anyData;
-        } else {
-          data = titleData;
+          throw new Error(`Game "${gameSlug}" not found or not available`);
         }
+        
+        setGame(titleData);
+      } else {
+        setGame(data);
       }
 
-      console.log('🎮 ZeusGamePage: Found game data:', data);
-      
-      // Ensure all required fields are present, use fallback values if missing
-      const gameData: Game = {
-        id: data.id || fallbackZeusGame.id,
-        title: data.title || fallbackZeusGame.title,
-        description: data.description || fallbackZeusGame.description,
-        image_url: data.image_url || fallbackZeusGame.image_url,
-        route: data.route || fallbackZeusGame.route,
-        rtp: data.rtp || fallbackZeusGame.rtp,
-        volatility: data.volatility || fallbackZeusGame.volatility,
-        hit_frequency: data.hit_frequency || fallbackZeusGame.hit_frequency,
-        max_win: data.max_win || fallbackZeusGame.max_win,
-        free_spins: data.free_spins || fallbackZeusGame.free_spins,
-        reels_rows: data.reels_rows || fallbackZeusGame.reels_rows,
-        min_bet: data.min_bet || fallbackZeusGame.min_bet,
-        max_bet: data.max_bet || fallbackZeusGame.max_bet,
-        release_date: data.release_date || fallbackZeusGame.release_date,
-        early_access_date: data.early_access_date || fallbackZeusGame.early_access_date,
-        available: data.available !== undefined ? data.available : fallbackZeusGame.available,
-        created_at: data.created_at || fallbackZeusGame.created_at,
-        updated_at: data.updated_at || fallbackZeusGame.updated_at
-      };
-
-      console.log('🎮 ZeusGamePage: Final game data:', gameData);
-      setGame(gameData);
+      console.log('🎮 GamePage: Successfully loaded game:', data?.title || titleData?.title);
       
     } catch (error) {
-      console.error('🎮 ZeusGamePage: Error fetching game:', error);
-      console.log('🎮 ZeusGamePage: Using fallback Zeus data');
-      setGame(fallbackZeusGame);
+      console.error('🎮 GamePage: Error fetching game:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load game');
     } finally {
       setLoading(false);
     }
   };
 
-  const mechanics = [
-    {
-      name: 'wavE™ Mechanic',
-      description: 'Revolutionary wild movement system that creates cascading wins',
-      icon: <Zap className="text-brand-orange" size={24} />
-    },
-    {
-      name: 'Clockwork Wilds',
-      description: 'Mechanical wilds that expand and merge across reels',
-      icon: <Target className="text-brand-orange" size={24} />
-    },
-    {
-      name: 'Tyrant Mode',
-      description: 'High-tension bonus round with multiplying chaos',
-      icon: <TrendingUp className="text-brand-orange" size={24} />
-    },
-    {
-      name: 'Divine Intervention',
-      description: 'Random feature triggers that amplify winning potential',
-      icon: <Shield className="text-brand-orange" size={24} />
-    }
-  ];
+  // Dynamic mechanics based on game data
+  const getMechanics = (game: Game) => {
+    // This could be expanded to read from a mechanics field in the database
+    // For now, we'll generate some based on the game's characteristics
+    const baseMechanics = [
+      {
+        name: 'Advanced Wilds',
+        description: 'Dynamic wild symbols that enhance winning combinations',
+        icon: <Zap className="text-brand-orange" size={24} />
+      },
+      {
+        name: 'Bonus Features',
+        description: 'Engaging bonus rounds with multiplied rewards',
+        icon: <Target className="text-brand-orange" size={24} />
+      },
+      {
+        name: 'High Volatility',
+        description: game.volatility === 'High' ? 'High-risk, high-reward gameplay' : 'Balanced risk and reward system',
+        icon: <TrendingUp className="text-brand-orange" size={24} />
+      },
+      {
+        name: 'Secure Gaming',
+        description: 'Certified fair play and secure transactions',
+        icon: <Shield className="text-brand-orange" size={24} />
+      }
+    ];
 
-  const features = [
-    { label: 'Feature Buy-in', value: 'Yes', icon: <Gamepad2 size={16} /> },
+    return baseMechanics;
+  };
+
+  const getFeatures = (game: Game) => [
+    { label: 'Feature Buy-in', value: 'Available', icon: <Gamepad2 size={16} /> },
     { label: 'Bonus Mode', value: 'Yes', icon: <Target size={16} /> },
-    { label: 'Max Payout Probability', value: '1 in 16m', icon: <BarChart3 size={16} /> },
-    { label: 'Game Features', value: 'Advanced', icon: <Zap size={16} /> }
+    { label: 'RTP', value: game.rtp, icon: <BarChart3 size={16} /> },
+    { label: 'Volatility', value: game.volatility, icon: <Zap size={16} /> }
   ];
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-brand-dark-gradient flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white font-body">Loading game...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!game) {
-    return (
-      <div className="min-h-screen bg-brand-dark-gradient flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-heading font-bold text-white mb-4">Game Not Found</h1>
-          <Link 
-            to="/"
-            className="text-brand-orange hover:text-brand-yellow transition-colors duration-300 font-body"
-          >
-            Return to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   // Helper function to safely format dates
   const formatDate = (dateString: string) => {
@@ -199,7 +132,41 @@ const ZeusGamePage = () => {
     };
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-brand-dark-gradient flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white font-body">Loading game...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !game) {
+    return (
+      <div className="min-h-screen bg-brand-dark-gradient flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-heading font-bold text-white mb-4">
+            {error || 'Game Not Found'}
+          </h1>
+          <p className="text-gray-400 mb-6 font-body">
+            The game you're looking for is not available or doesn't exist.
+          </p>
+          <Link 
+            to="/"
+            className="text-brand-orange hover:text-brand-yellow transition-colors duration-300 font-body"
+          >
+            Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const titleParts = getTitleParts(game.title);
+  const mechanics = getMechanics(game);
+  const features = getFeatures(game);
 
   return (
     <>
@@ -208,15 +175,17 @@ const ZeusGamePage = () => {
         <section className="relative pt-20 pb-12 overflow-hidden">
           {/* Background Image with Overlay */}
           <div className="absolute inset-0">
-            <img 
-              src={game.image_url} 
-              alt={game.title}
-              className="w-full h-full object-cover opacity-30"
-              onError={(e) => {
-                console.log('🎮 ZeusGamePage: Hero image failed to load, using fallback');
-                e.currentTarget.src = 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-              }}
-            />
+            {game.image_url && (
+              <img 
+                src={game.image_url} 
+                alt={game.title}
+                className="w-full h-full object-cover opacity-30"
+                onError={(e) => {
+                  console.log('🎮 GamePage: Hero image failed to load');
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/50"></div>
           </div>
@@ -240,7 +209,7 @@ const ZeusGamePage = () => {
               <div className="space-y-8">
                 <div>
                   <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-4">
-                    {titleParts.main}: {titleParts.sub && <span className="text-brand-orange">{titleParts.sub}</span>}
+                    {titleParts.main}{titleParts.sub && <>: <span className="text-brand-orange">{titleParts.sub}</span></>}
                   </h1>
                   <p className="text-xl text-gray-300 leading-relaxed font-body">
                     {game.description}
@@ -283,15 +252,17 @@ const ZeusGamePage = () => {
               {/* Game Preview */}
               <div className="relative">
                 <div className="bg-black/20 p-8 rounded-2xl border border-gray-800 backdrop-blur-sm">
-                  <img 
-                    src={game.image_url} 
-                    alt={`${game.title} Preview`}
-                    className="w-full rounded-lg shadow-2xl"
-                    onError={(e) => {
-                      console.log('🎮 ZeusGamePage: Preview image failed to load, using fallback');
-                      e.currentTarget.src = 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-                    }}
-                  />
+                  {game.image_url && (
+                    <img 
+                      src={game.image_url} 
+                      alt={`${game.title} Preview`}
+                      className="w-full rounded-lg shadow-2xl"
+                      onError={(e) => {
+                        console.log('🎮 GamePage: Preview image failed to load');
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
                 </div>
               </div>
@@ -337,9 +308,7 @@ const ZeusGamePage = () => {
                     Digital Chaos Unleashed
                   </h2>
                   <p className="text-lg text-gray-300 leading-relaxed font-body">
-                    {game.title} represents the pinnacle of our Digital Chaos philosophy. 
-                    This isn't just another slot game—it's a mechanical symphony where every component 
-                    works in perfect discord to create moments of pure tension and explosive payoff.
+                    {game.description}
                   </p>
                 </div>
 
@@ -370,10 +339,10 @@ const ZeusGamePage = () => {
               }`}>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                    Revolutionary <span className="text-brand-orange">Mechanics</span>
+                    Game <span className="text-brand-orange">Mechanics</span>
                   </h2>
                   <p className="text-lg text-gray-300 max-w-3xl mx-auto font-body">
-                    Each mechanic is designed to break convention and create unprecedented player engagement.
+                    Advanced features designed to create engaging and rewarding gameplay experiences.
                   </p>
                 </div>
 
@@ -381,10 +350,7 @@ const ZeusGamePage = () => {
                   {mechanics.map((mechanic, index) => (
                     <div
                       key={mechanic.name}
-                      className={`bg-black/30 p-8 rounded-xl border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)] ${
-                        mechanicsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                      }`}
-                      style={{ transitionDelay: `${index * 100}ms` }}
+                      className="bg-black/30 p-8 rounded-xl border border-gray-800 hover:border-brand-orange/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(234,163,56,0.2)]"
                     >
                       <div className="flex items-start space-x-4">
                         <div className="flex-shrink-0 p-3 bg-brand-orange/10 rounded-lg">
@@ -445,14 +411,11 @@ const ZeusGamePage = () => {
                     { label: 'Reel Configuration', value: game.reels_rows, description: 'Game grid layout' },
                     { label: 'Minimum Bet', value: game.min_bet, description: 'Lowest stake amount' },
                     { label: 'Maximum Bet', value: game.max_bet, description: 'Highest stake amount' },
-                    { label: 'Max Win Probability', value: '1 in 16m', description: 'Jackpot hit frequency' }
+                    { label: 'Release Date', value: formatDate(game.release_date), description: 'Official launch date' }
                   ].map((stat, index) => (
                     <div
                       key={stat.label}
-                      className={`bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300 ${
-                        statsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                      }`}
-                      style={{ transitionDelay: `${index * 50}ms` }}
+                      className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300"
                     >
                       <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">{stat.value}</div>
                       <div className="text-lg font-semibold text-white mb-2 font-heading">{stat.label}</div>
@@ -470,4 +433,4 @@ const ZeusGamePage = () => {
   );
 };
 
-export default ZeusGamePage;
+export default GamePage;

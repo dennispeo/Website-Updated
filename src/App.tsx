@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CareersPage from './pages/CareersPage';
-import ZeusGamePage from './pages/ZeusGamePage';
+import GamePage from './pages/GamePage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GameManagementPage from './pages/GameManagementPage';
@@ -35,7 +35,7 @@ function App() {
         <Route path="/games/:gameSlug" element={
           <>
             <Navigation />
-            <ZeusGamePage />
+            <GamePage />
             <FloatingContactButton />
           </>
         } />
