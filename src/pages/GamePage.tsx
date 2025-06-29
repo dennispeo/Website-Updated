@@ -160,21 +160,21 @@ const GamePage = () => {
       <div className="min-h-screen bg-brand-dark-gradient">
         {/* Hero Section with Background Image */}
         <section className="relative pt-20 pb-12 overflow-hidden">
-          {/* Background Image with Overlay */}
+          {/* Background Image with Enhanced Visibility */}
           <div className="absolute inset-0">
             {game.image_url && (
               <img 
                 src={game.image_url} 
                 alt={game.title}
-                className="w-full h-full object-cover opacity-20"
+                className="w-full h-full object-cover opacity-60"
                 onError={(e) => {
                   console.log('🎮 GamePage: Hero image failed to load');
                   e.currentTarget.style.display = 'none';
                 }}
               />
             )}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/90 to-brand-dark/70"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/50"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/60 to-brand-dark/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-transparent to-brand-dark/30"></div>
           </div>
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -196,55 +196,55 @@ const GamePage = () => {
                 <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-6">
                   {titleParts.main}{titleParts.sub && <>: <span className="text-brand-orange">{titleParts.sub}</span></>}
                 </h1>
-                <p className="text-xl text-gray-300 leading-relaxed font-body max-w-3xl mx-auto">
+                <p className="text-xl text-gray-200 leading-relaxed font-body max-w-3xl mx-auto">
                   {game.description}
                 </p>
               </div>
 
               {/* Expanded Stats Grid - Now includes 7 items with Features */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.rtp}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">RTP</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">RTP</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.max_win}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Max Win</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Max Win</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.volatility}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Volatility</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Volatility</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.hit_frequency}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Hit Rate</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Hit Rate</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.reels_rows}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Reel Layout</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Reel Layout</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.free_spins}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Free Spins</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Free Spins</div>
                 </div>
-                <div className="bg-black/60 backdrop-blur-sm p-4 rounded-lg border border-gray-700/50 col-span-2 md:col-span-1">
+                <div className="bg-black/70 backdrop-blur-sm p-4 rounded-lg border border-gray-600/50 col-span-2 md:col-span-1">
                   <div className="text-2xl font-bold text-brand-orange font-heading">{game.features || 'Standard'}</div>
-                  <div className="text-sm text-gray-300 uppercase tracking-wider font-body">Features</div>
+                  <div className="text-sm text-gray-200 uppercase tracking-wider font-body">Features</div>
                 </div>
               </div>
 
               {/* Betting Range */}
-              <div className="bg-black/60 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md mx-auto">
+              <div className="bg-black/70 backdrop-blur-sm p-6 rounded-xl border border-gray-600/50 max-w-md mx-auto">
                 <h3 className="text-lg font-heading font-bold text-white mb-4">Betting Range</h3>
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-xl font-bold text-brand-orange font-heading">{game.min_bet}</div>
-                    <div className="text-sm text-gray-300 font-body">Minimum Bet</div>
+                    <div className="text-sm text-gray-200 font-body">Minimum Bet</div>
                   </div>
-                  <div className="text-gray-400">—</div>
+                  <div className="text-gray-300">—</div>
                   <div>
                     <div className="text-xl font-bold text-brand-orange font-heading">{game.max_bet}</div>
-                    <div className="text-sm text-gray-300 font-body">Maximum Bet</div>
+                    <div className="text-sm text-gray-200 font-body">Maximum Bet</div>
                   </div>
                 </div>
               </div>
@@ -264,58 +264,34 @@ const GamePage = () => {
           </div>
         </section>
 
-        {/* Game Details Section */}
+        {/* Game Details Section - Only Release Dates */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
-                Game <span className="text-brand-orange">Details</span>
+                Release <span className="text-brand-orange">Timeline</span>
               </h2>
               <p className="text-lg text-gray-300 max-w-3xl mx-auto font-body">
-                Complete technical specifications and release information for {game.title}.
+                Important dates for {game.title} availability and launch.
               </p>
             </div>
 
-            {/* Release Timeline */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
-              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
+            {/* Release Timeline - Only the dates */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              <div className="bg-black/30 p-8 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300">
                 <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Early Access</h3>
                 <div className="text-3xl font-bold text-white mb-2 font-heading">
                   {formatDate(game.early_access_date)}
                 </div>
-                <p className="text-gray-400 font-body">Exclusive partner preview</p>
+                <p className="text-gray-400 font-body">Exclusive partner preview and testing phase</p>
               </div>
-              <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
+              <div className="bg-black/30 p-8 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300">
                 <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Full Release</h3>
                 <div className="text-3xl font-bold text-white mb-2 font-heading">
                   {formatDate(game.release_date)}
                 </div>
-                <p className="text-gray-400 font-body">Global market launch</p>
+                <p className="text-gray-400 font-body">Global market launch and wide availability</p>
               </div>
-            </div>
-
-            {/* Complete Statistics Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { label: 'Return to Player', value: game.rtp, description: 'Theoretical return percentage' },
-                { label: 'Volatility Level', value: game.volatility, description: 'Risk and reward balance' },
-                { label: 'Hit Frequency', value: game.hit_frequency, description: 'Winning spin probability' },
-                { label: 'Maximum Win', value: game.max_win, description: 'Highest possible payout' },
-                { label: 'Free Spins Trigger', value: game.free_spins, description: 'Bonus round frequency' },
-                { label: 'Reel Configuration', value: game.reels_rows, description: 'Game grid layout' },
-                { label: 'Minimum Bet', value: game.min_bet, description: 'Lowest stake amount' },
-                { label: 'Maximum Bet', value: game.max_bet, description: 'Highest stake amount' },
-                { label: 'Special Features', value: game.features || 'Standard', description: 'Unique game mechanics' }
-              ].map((stat, index) => (
-                <div
-                  key={stat.label}
-                  className="bg-black/30 p-6 rounded-xl border border-gray-800 hover:border-brand-orange/30 transition-all duration-300"
-                >
-                  <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">{stat.value}</div>
-                  <div className="text-lg font-semibold text-white mb-2 font-heading">{stat.label}</div>
-                  <div className="text-sm text-gray-400 font-body">{stat.description}</div>
-                </div>
-              ))}
             </div>
           </div>
         </section>
