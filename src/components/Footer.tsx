@@ -52,39 +52,48 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Clean Bottom Section */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 text-center md:text-left">
-            {/* Copyright */}
-            <p className="text-sm text-gray-600 font-body">
-              © 2025 Play E Ola. All rights reserved. Digital Chaos Engineered with ❤️
-            </p>
+        {/* Clean Bottom Section - Better organized */}
+        <div className="border-t border-gray-800 pt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center text-center lg:text-left">
+            {/* Copyright - Left */}
+            <div className="lg:col-span-1">
+              <p className="text-sm text-gray-500 font-body">
+                © 2025 Play E Ola. All rights reserved.
+              </p>
+              <p className="text-xs text-gray-600 font-body mt-1">
+                Digital Chaos Engineered with ❤️
+              </p>
+            </div>
 
-            {/* Legal Links */}
-            <div className="flex items-center space-x-6 text-sm text-gray-500 font-body">
-              <span>
-                18+ Only. Please gamble responsibly.{' '}
-                <a
-                  href="#"
-                  className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
+            {/* Legal Notice - Center */}
+            <div className="lg:col-span-1">
+              <p className="text-sm text-gray-400 font-body">
+                18+ Only. Please gamble responsibly.
+              </p>
+              <a
+                href="#"
+                className="text-sm text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline font-body"
+              >
+                Learn More About Responsible Gaming
+              </a>
+            </div>
+
+            {/* Policy Links - Right */}
+            <div className="lg:col-span-1">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-end space-y-2 sm:space-y-0 sm:space-x-6">
+                <Link
+                  to="/privacy-policy"
+                  className="text-sm text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline font-body"
                 >
-                  Learn More
-                </a>
-              </span>
-              <span>•</span>
-              <Link
-                to="/privacy-policy"
-                className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
-              >
-                Privacy Policy
-              </Link>
-              <span>•</span>
-              <Link
-                to="/cookies-policy"
-                className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
-              >
-                Cookies Policy
-              </Link>
+                  Privacy Policy
+                </Link>
+                <Link
+                  to="/cookies-policy"
+                  className="text-sm text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline font-body"
+                >
+                  Cookies Policy
+                </Link>
+              </div>
             </div>
           </div>
         </div>
