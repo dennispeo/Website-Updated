@@ -9,8 +9,6 @@ interface UserProfile {
   is_admin: boolean;
   created_at: string;
   updated_at: string;
-  last_sign_in_at?: string;
-  email_confirmed_at?: string;
 }
 
 interface CreateUserForm {
@@ -41,7 +39,7 @@ const UserManagementPage = () => {
     try {
       setLoading(true);
       
-      // Fetch profiles with auth user data
+      // Fetch profiles only - no admin API calls from client
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -49,26 +47,7 @@ const UserManagementPage = () => {
 
       if (profilesError) throw profilesError;
 
-      // Get auth user data for additional info
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        console.warn('Could not fetch auth user data:', authError);
-        // Continue with just profile data
-        setUsers(profiles || []);
-      } else {
-        // Merge profile and auth data
-        const mergedUsers = profiles?.map(profile => {
-          const authUser = authUsers.users.find(u => u.id === profile.id);
-          return {
-            ...profile,
-            last_sign_in_at: authUser?.last_sign_in_at,
-            email_confirmed_at: authUser?.email_confirmed_at
-          };
-        }) || [];
-        
-        setUsers(mergedUsers);
-      }
+      setUsers(profiles || []);
     } catch (error) {
       console.error('Error fetching users:', error);
       setError('Failed to load users');
@@ -84,44 +63,9 @@ const UserManagementPage = () => {
     setSuccess(null);
 
     try {
-      // Create user in auth
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: formData.email,
-        password: formData.password,
-        email_confirm: true
-      });
-
-      if (authError) throw authError;
-
-      if (!authData.user) {
-        throw new Error('User creation failed');
-      }
-
-      // Create profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert([{
-          id: authData.user.id,
-          email: formData.email,
-          is_admin: formData.is_admin
-        }]);
-
-      if (profileError) throw profileError;
-
-      // Add to admin_users table if admin
-      if (formData.is_admin) {
-        const { error: adminError } = await supabase
-          .from('admin_users')
-          .insert([{ user_id: authData.user.id }]);
-
-        if (adminError) {
-          console.warn('Could not add to admin_users table:', adminError);
-        }
-      }
-
-      setSuccess('User created successfully');
-      await fetchUsers();
-      resetForm();
+      // Note: User creation from client-side is limited
+      // In a production environment, this should be handled by a secure backend
+      setError('User creation must be handled through a secure backend. Please contact your system administrator.');
     } catch (error: any) {
       console.error('Error creating user:', error);
       setError(error.message || 'Failed to create user');
@@ -149,40 +93,15 @@ const UserManagementPage = () => {
     setSuccess(null);
 
     try {
-      // Update profile
+      // Update profile (email and admin status changes should be handled by backend)
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
-          email: formData.email,
           is_admin: formData.is_admin
         })
         .eq('id', editingUser.id);
 
       if (profileError) throw profileError;
-
-      // Update auth user email if changed
-      if (formData.email !== editingUser.email) {
-        const { error: authError } = await supabase.auth.admin.updateUserById(
-          editingUser.id,
-          { email: formData.email }
-        );
-
-        if (authError) {
-          console.warn('Could not update auth email:', authError);
-        }
-      }
-
-      // Update password if provided
-      if (formData.password) {
-        const { error: passwordError } = await supabase.auth.admin.updateUserById(
-          editingUser.id,
-          { password: formData.password }
-        );
-
-        if (passwordError) {
-          console.warn('Could not update password:', passwordError);
-        }
-      }
 
       // Handle admin status change
       if (formData.is_admin !== editingUser.is_admin) {
@@ -210,7 +129,12 @@ const UserManagementPage = () => {
         }
       }
 
-      setSuccess('User updated successfully');
+      if (formData.email !== editingUser.email || formData.password) {
+        setSuccess('Admin status updated. Email and password changes must be handled through a secure backend.');
+      } else {
+        setSuccess('User updated successfully');
+      }
+      
       await fetchUsers();
       resetForm();
     } catch (error: any) {
@@ -230,13 +154,9 @@ const UserManagementPage = () => {
       setLoading(true);
       setError(null);
 
-      // Delete from auth (this will cascade to profiles due to foreign key)
-      const { error: authError } = await supabase.auth.admin.deleteUser(userId);
-
-      if (authError) throw authError;
-
-      setSuccess('User deleted successfully');
-      await fetchUsers();
+      // Note: User deletion from client-side is not secure
+      // In a production environment, this should be handled by a secure backend
+      setError('User deletion must be handled through a secure backend. Please contact your system administrator.');
     } catch (error: any) {
       console.error('Error deleting user:', error);
       setError(error.message || 'Failed to delete user');
@@ -407,11 +327,11 @@ const UserManagementPage = () => {
               <Calendar className="text-brand-orange" size={24} />
               <div>
                 <div className="text-2xl font-bold text-white font-heading">
-                  {users.filter(u => u.last_sign_in_at && 
-                    new Date(u.last_sign_in_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                  {users.filter(u => u.created_at && 
+                    new Date(u.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
                   ).length}
                 </div>
-                <div className="text-sm text-gray-400 font-body">Active This Week</div>
+                <div className="text-sm text-gray-400 font-body">Created This Week</div>
               </div>
             </div>
           </div>
@@ -433,7 +353,7 @@ const UserManagementPage = () => {
                     Created
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-brand-orange uppercase tracking-wider font-body">
-                    Last Sign In
+                    Updated
                   </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-brand-orange uppercase tracking-wider font-body">
                     Actions
@@ -477,7 +397,7 @@ const UserManagementPage = () => {
                       {formatDate(user.created_at)}
                     </td>
                     <td className="px-6 py-4 text-gray-300 text-sm font-body">
-                      {formatDate(user.last_sign_in_at)}
+                      {formatDate(user.updated_at)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-2">
@@ -553,10 +473,15 @@ const UserManagementPage = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    disabled={loading}
+                    disabled={loading || !!editingUser}
                     className="w-full pl-10 pr-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body disabled:opacity-50"
                     placeholder="user@example.com"
                   />
+                  {editingUser && (
+                    <p className="text-xs text-gray-400 mt-1 font-body">
+                      Email changes must be handled through a secure backend
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -570,19 +495,24 @@ const UserManagementPage = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required={!editingUser}
-                    disabled={loading}
+                    disabled={loading || !!editingUser}
                     className="w-full pr-12 pl-4 py-3 bg-black/30 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange transition-colors duration-200 font-body disabled:opacity-50"
-                    placeholder={editingUser ? "Enter new password" : "Enter password"}
+                    placeholder={editingUser ? "Password changes require backend" : "Enter password"}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    disabled={loading}
+                    disabled={loading || !!editingUser}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors duration-200 disabled:opacity-50"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {editingUser && (
+                  <p className="text-xs text-gray-400 mt-1 font-body">
+                    Password changes must be handled through a secure backend
+                  </p>
+                )}
               </div>
 
               <div className="flex items-center space-x-3">
