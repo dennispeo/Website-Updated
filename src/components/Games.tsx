@@ -21,40 +21,54 @@ const Games = () => {
         .eq('available', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setGames(data || []);
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
+      
+      if (data && data.length > 0) {
+        setGames(data);
+      } else {
+        // If no data from Supabase, use fallback
+        setGames(getFallbackGames());
+      }
     } catch (error) {
       console.error('Error fetching games:', error);
-      // Fallback to static data if Supabase fails
-      setGames([
-        {
-          id: '1',
-          title: "Zeus: Clockwork Tyrant",
-          description: "An oppressive myth-tech world where wilds move, merge, and explode. Powered by our wavE™ mechanic, this game turns tension into payoff.",
-          image_url: "/image.png",
-          route: "/games/zeus-clockwork-tyrant",
-          available: true,
-          rtp: '96.06%',
-          volatility: 'High',
-          hit_frequency: '31.41%',
-          max_win: '99,999x',
-          free_spins: '1 in 249',
-          reels_rows: '3-2-3-2-3',
-          min_bet: '€0.20',
-          max_bet: '€100.00',
-          release_date: '2025-03-25',
-          early_access_date: '2025-03-17',
-          created_at: '2025-01-01',
-          updated_at: '2025-01-01'
-        }
-      ]);
+      // Always use fallback data if Supabase fails
+      setGames(getFallbackGames());
     } finally {
       setLoading(false);
     }
   };
 
-  // Add coming soon placeholder if no games available
-  const displayGames = games.length > 0 ? games : [];
+  const getFallbackGames = (): Game[] => {
+    return [
+      {
+        id: '1',
+        title: "Zeus: Clockwork Tyrant",
+        description: "An oppressive myth-tech world where wilds move, merge, and explode. Powered by our wavE™ mechanic, this game turns tension into payoff.",
+        image_url: "/image.png",
+        route: "/games/zeus-clockwork-tyrant",
+        available: true,
+        rtp: '96.06%',
+        volatility: 'High',
+        hit_frequency: '31.41%',
+        max_win: '99,999x',
+        free_spins: '1 in 249',
+        reels_rows: '3-2-3-2-3',
+        min_bet: '€0.20',
+        max_bet: '€100.00',
+        release_date: '2025-03-25',
+        early_access_date: '2025-03-17',
+        created_at: '2025-01-01',
+        updated_at: '2025-01-01'
+      }
+    ];
+  };
+
+  // Always show at least the fallback game plus coming soon
+  const displayGames = games.length > 0 ? games : getFallbackGames();
+  
   const comingSoonGame = {
     id: 'coming-soon',
     title: "Coming Soon",
@@ -121,6 +135,10 @@ const Games = () => {
                       src={game.image_url} 
                       alt={game.title}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      onError={(e) => {
+                        // Hide image if it fails to load
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                   </div>
@@ -156,6 +174,13 @@ const Games = () => {
             ))}
           </div>
         )}
+
+        {/* Debug Info - Remove this in production */}
+        <div className="mt-8 text-center">
+          <p className="text-xs text-gray-500 font-body">
+            Games loaded: {displayGames.length} | Loading: {loading ? 'Yes' : 'No'}
+          </p>
+        </div>
       </div>
     </section>
   );
