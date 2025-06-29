@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Play, Download } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { useInView } from '../hooks/useInView';
+import { useAnalytics } from '../hooks/useAnalytics';
 import { supabase, Game } from '../lib/supabase';
 import Footer from '../components/Footer';
 
@@ -11,6 +12,7 @@ const GamePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { gameSlug } = useParams();
+  const { trackButtonClick, trackGameDemo, trackDownload } = useAnalytics();
 
   useEffect(() => {
     fetchGame();
@@ -94,6 +96,24 @@ const GamePage = () => {
       setError(error instanceof Error ? error.message : 'Failed to load game');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePlayDemo = () => {
+    if (game) {
+      trackGameDemo(game.title);
+      trackButtonClick('Play Demo', 'game-demo-button');
+      // Here you would typically open the game demo
+      alert('Demo functionality would be implemented here');
+    }
+  };
+
+  const handleDownloadAssets = () => {
+    if (game) {
+      trackDownload('Game Assets', `/downloads/${game.title.toLowerCase().replace(/\s+/g, '-')}-assets.zip`);
+      trackButtonClick('Download Assets', 'download-assets-button');
+      // Here you would typically trigger the download
+      alert('Asset download would be implemented here');
     }
   };
 
@@ -183,6 +203,7 @@ const GamePage = () => {
               <Link 
                 to="/"
                 className="inline-flex items-center space-x-2 text-brand-orange hover:text-brand-yellow transition-colors duration-300 font-body"
+                onClick={() => trackButtonClick('Back to Games', 'back-button', '/')}
               >
                 <ArrowLeft size={20} />
                 <span>Back to Games</span>
@@ -251,11 +272,17 @@ const GamePage = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body shadow-lg">
+                <button 
+                  onClick={handlePlayDemo}
+                  className="group flex items-center justify-center space-x-3 bg-brand-gradient text-brand-dark font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(234,163,56,0.6)] font-body shadow-lg"
+                >
                   <Play size={20} />
                   <span>Play Demo</span>
                 </button>
-                <button className="group flex items-center justify-center space-x-3 border-2 border-brand-orange text-brand-orange font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:bg-brand-orange hover:text-brand-dark font-body shadow-lg">
+                <button 
+                  onClick={handleDownloadAssets}
+                  className="group flex items-center justify-center space-x-3 border-2 border-brand-orange text-brand-orange font-bold uppercase tracking-wider py-4 px-8 rounded-lg transition-all duration-300 hover:bg-brand-orange hover:text-brand-dark font-body shadow-lg"
+                >
                   <Download size={20} />
                   <span>Download Assets</span>
                 </button>

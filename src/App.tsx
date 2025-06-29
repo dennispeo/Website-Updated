@@ -15,8 +15,12 @@ import Navigation from './components/Navigation';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import FloatingContactButton from './components/FloatingContactButton';
 import ProtectedRoute from './components/ProtectedRoute';
+import { useAnalytics } from './hooks/useAnalytics';
 
 function App() {
+  // Initialize analytics tracking
+  useAnalytics();
+
   return (
     <div className="bg-black text-white">
       <AgeVerificationModal />

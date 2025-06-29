@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Mail, Building, User, MessageSquare } from 'lucide-react';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
   
   const modalRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const { trackFormSubmit, trackContactForm } = useAnalytics();
 
   useEffect(() => {
     if (isOpen) {
@@ -77,8 +79,14 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Track form submission
+    trackFormSubmit('partnership-inquiry');
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Track conversion
+    trackContactForm(formData.inquiryType);
     
     setIsSubmitting(false);
     setIsSubmitted(true);

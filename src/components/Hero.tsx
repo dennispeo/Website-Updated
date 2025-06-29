@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const { trackButtonClick } = useAnalytics();
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
   const scrollToGames = () => {
+    trackButtonClick('See Our Portfolio', 'hero-cta-button', '#games');
     const gamesSection = document.getElementById('games');
     if (gamesSection) {
       gamesSection.scrollIntoView({ behavior: 'smooth' });
