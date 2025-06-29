@@ -3,6 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CareersPage from './pages/CareersPage';
 import GamePage from './pages/GamePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import CookiesPolicyPage from './pages/CookiesPolicyPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GameManagementPage from './pages/GameManagementPage';
@@ -29,6 +31,20 @@ function App() {
           <>
             <Navigation />
             <CareersPage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/privacy-policy" element={
+          <>
+            <Navigation />
+            <PrivacyPolicyPage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/cookies-policy" element={
+          <>
+            <Navigation />
+            <CookiesPolicyPage />
             <FloatingContactButton />
           </>
         } />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Mail, MessageCircle, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -59,16 +60,32 @@ const Footer = () => {
               © 2025 Play E Ola. All rights reserved. Digital Chaos Engineered with ❤️
             </p>
 
-            {/* Responsible gaming */}
-            <p className="text-sm text-gray-500 font-body">
-              18+ Only. Please gamble responsibly.{' '}
-              <a
-                href="#"
+            {/* Legal Links */}
+            <div className="flex items-center space-x-6 text-sm text-gray-500 font-body">
+              <span>
+                18+ Only. Please gamble responsibly.{' '}
+                <a
+                  href="#"
+                  className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
+                >
+                  Learn More
+                </a>
+              </span>
+              <span>•</span>
+              <Link
+                to="/privacy-policy"
                 className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
               >
-                Learn More
-              </a>
-            </p>
+                Privacy Policy
+              </Link>
+              <span>•</span>
+              <Link
+                to="/cookies-policy"
+                className="text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline"
+              >
+                Cookies Policy
+              </Link>
+            </div>
           </div>
         </div>
       </div>
