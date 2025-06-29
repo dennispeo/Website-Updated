@@ -124,12 +124,6 @@ const Footer = () => {
                 <p className="text-sm text-gray-400 font-body">
                   18+ Only. Please gamble responsibly.
                 </p>
-                <a
-                  href="#"
-                  className="text-sm text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline font-body"
-                >
-                  Learn More About Responsible Gaming
-                </a>
               </div>
 
               {/* Policy Links & Admin - Right */}
