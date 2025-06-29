@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CareersPage from './pages/CareersPage';
+import BackofficePage from './pages/BackofficePage';
 import GamePage from './pages/GamePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import CookiesPolicyPage from './pages/CookiesPolicyPage';
@@ -37,6 +38,13 @@ function App() {
           <>
             <Navigation />
             <CareersPage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/backoffice" element={
+          <>
+            <Navigation />
+            <BackofficePage />
             <FloatingContactButton />
           </>
         } />

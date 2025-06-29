@@ -32,7 +32,7 @@ const Navigation = () => {
   const navLinks = [
     { label: 'About', href: 'about', type: 'scroll' },
     { label: 'Games', href: 'games', type: 'scroll' },
-    { label: 'Backoffice', href: 'backoffice', type: 'scroll' },
+    { label: 'Backoffice', href: '/backoffice', type: 'route' },
     { label: 'Careers', href: '/careers', type: 'route' }
   ];
 

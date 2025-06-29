@@ -2,7 +2,6 @@ import React from 'react';
 import Hero from '../components/Hero';
 import About from '../components/About';
 import Games from '../components/Games';
-import Backoffice from '../components/Mechanics';
 import Footer from '../components/Footer';
 
 const HomePage = () => {
@@ -11,7 +10,6 @@ const HomePage = () => {
       <Hero />
       <About />
       <Games />
-      <Backoffice />
       <Footer />
     </>
   );
