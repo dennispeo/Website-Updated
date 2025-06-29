@@ -241,9 +241,8 @@ const GamePage = () => {
               </Link>
             </div>
 
-            <div ref={heroRef} className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center transition-all duration-800 ${
-              heroInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-            }`}>
+            {/* Game Content - This is the main content that should appear */}
+            <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Game Info */}
               <div className="space-y-8">
                 <div>
@@ -408,9 +407,7 @@ const GamePage = () => {
 
             {/* Mechanics Tab */}
             {activeTab === 'mechanics' && (
-              <div ref={mechanicsRef} className={`transition-all duration-800 ${
-                mechanicsInView ? 'opacity-100' : 'opacity-0'
-              }`}>
+              <div ref={mechanicsRef}>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
                     Game <span className="text-brand-orange">Mechanics</span>
@@ -463,9 +460,7 @@ const GamePage = () => {
 
             {/* Statistics Tab */}
             {activeTab === 'statistics' && (
-              <div ref={statsRef} className={`transition-all duration-800 ${
-                statsInView ? 'opacity-100' : 'opacity-0'
-              }`}>
+              <div ref={statsRef}>
                 <div className="text-center mb-12">
                   <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-6">
                     Game <span className="text-brand-orange">Statistics</span>
