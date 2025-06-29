@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MessageCircle, ArrowRight, Sparkles, Zap } from 'lucide-react';
+import { Mail, MessageCircle, ArrowRight, Sparkles, Zap, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ContactModal from './ContactModal';
 
@@ -132,7 +132,7 @@ const Footer = () => {
                 </a>
               </div>
 
-              {/* Policy Links - Right */}
+              {/* Policy Links & Admin - Right */}
               <div className="lg:col-span-1">
                 <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-end space-y-2 sm:space-y-0 sm:space-x-6">
                   <Link
@@ -146,6 +146,15 @@ const Footer = () => {
                     className="text-sm text-brand-orange hover:text-brand-yellow transition-colors duration-200 hover:underline font-body"
                   >
                     Cookies Policy
+                  </Link>
+                  {/* Admin Button - Discreet but accessible */}
+                  <Link
+                    to="/admin/login"
+                    className="group flex items-center space-x-1 text-xs text-gray-600 hover:text-brand-orange transition-colors duration-300 font-body"
+                    title="Admin Access"
+                  >
+                    <Settings size={14} className="group-hover:rotate-90 transition-transform duration-300" />
+                    <span>Admin</span>
                   </Link>
                 </div>
               </div>
