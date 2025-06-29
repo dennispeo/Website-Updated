@@ -19,40 +19,106 @@ const ZeusGamePage = () => {
   }, [gameSlug]);
 
   const fetchGame = async () => {
+    console.log('🎮 ZeusGamePage: fetchGame started for slug:', gameSlug);
+    
+    // Define fallback Zeus data that matches the database structure
+    const fallbackZeusGame: Game = {
+      id: 'zeus-fallback',
+      title: 'Zeus: Clockwork Tyrant',
+      description: 'Enter an oppressive myth-tech world where ancient power meets mechanical precision. Experience the revolutionary wavE™ mechanic that transforms every spin into digital chaos.',
+      image_url: 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      route: '/games/zeus-clockwork-tyrant',
+      rtp: '96.06%',
+      volatility: 'High',
+      hit_frequency: '31.41%',
+      max_win: '99,999x',
+      free_spins: '1 in 249',
+      reels_rows: '3-2-3-2-3',
+      min_bet: '€0.20',
+      max_bet: '€100.00',
+      release_date: '2025-03-25',
+      early_access_date: '2025-03-17',
+      available: true,
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z'
+    };
+
     try {
-      // Try to fetch from Supabase first
+      console.log('🎮 ZeusGamePage: Attempting to fetch from Supabase...');
+      
+      // Try multiple approaches to find the game
       const route = `/games/${gameSlug || 'zeus-clockwork-tyrant'}`;
-      const { data, error } = await supabase
+      console.log('🎮 ZeusGamePage: Looking for route:', route);
+      
+      // First try: exact route match
+      let { data, error } = await supabase
         .from('games')
         .select('*')
         .eq('route', route)
         .single();
 
-      if (error) throw error;
-      setGame(data);
+      if (error || !data) {
+        console.log('🎮 ZeusGamePage: Route match failed, trying title search...');
+        
+        // Second try: search by title containing "Zeus"
+        const { data: titleData, error: titleError } = await supabase
+          .from('games')
+          .select('*')
+          .ilike('title', '%Zeus%')
+          .single();
+
+        if (titleError || !titleData) {
+          console.log('🎮 ZeusGamePage: Title search failed, trying any available game...');
+          
+          // Third try: get any available game
+          const { data: anyData, error: anyError } = await supabase
+            .from('games')
+            .select('*')
+            .eq('available', true)
+            .limit(1)
+            .single();
+
+          if (anyError || !anyData) {
+            throw new Error('No games found in database');
+          }
+          
+          data = anyData;
+        } else {
+          data = titleData;
+        }
+      }
+
+      console.log('🎮 ZeusGamePage: Found game data:', data);
+      
+      // Ensure all required fields are present, use fallback values if missing
+      const gameData: Game = {
+        id: data.id || fallbackZeusGame.id,
+        title: data.title || fallbackZeusGame.title,
+        description: data.description || fallbackZeusGame.description,
+        image_url: data.image_url || fallbackZeusGame.image_url,
+        route: data.route || fallbackZeusGame.route,
+        rtp: data.rtp || fallbackZeusGame.rtp,
+        volatility: data.volatility || fallbackZeusGame.volatility,
+        hit_frequency: data.hit_frequency || fallbackZeusGame.hit_frequency,
+        max_win: data.max_win || fallbackZeusGame.max_win,
+        free_spins: data.free_spins || fallbackZeusGame.free_spins,
+        reels_rows: data.reels_rows || fallbackZeusGame.reels_rows,
+        min_bet: data.min_bet || fallbackZeusGame.min_bet,
+        max_bet: data.max_bet || fallbackZeusGame.max_bet,
+        release_date: data.release_date || fallbackZeusGame.release_date,
+        early_access_date: data.early_access_date || fallbackZeusGame.early_access_date,
+        available: data.available !== undefined ? data.available : fallbackZeusGame.available,
+        created_at: data.created_at || fallbackZeusGame.created_at,
+        updated_at: data.updated_at || fallbackZeusGame.updated_at
+      };
+
+      console.log('🎮 ZeusGamePage: Final game data:', gameData);
+      setGame(gameData);
+      
     } catch (error) {
-      console.error('Error fetching game:', error);
-      // Fallback to static Zeus data
-      setGame({
-        id: '1',
-        title: 'Zeus: Clockwork Tyrant',
-        description: 'Enter an oppressive myth-tech world where ancient power meets mechanical precision. Experience the revolutionary wavE™ mechanic that transforms every spin into digital chaos.',
-        image_url: '/image.png',
-        route: '/games/zeus-clockwork-tyrant',
-        rtp: '96.06%',
-        volatility: 'High',
-        hit_frequency: '31.41%',
-        max_win: '99,999x',
-        free_spins: '1 in 249',
-        reels_rows: '3-2-3-2-3',
-        min_bet: '€0.20',
-        max_bet: '€100.00',
-        release_date: '2025-03-25',
-        early_access_date: '2025-03-17',
-        available: true,
-        created_at: '2025-01-01',
-        updated_at: '2025-01-01'
-      });
+      console.error('🎮 ZeusGamePage: Error fetching game:', error);
+      console.log('🎮 ZeusGamePage: Using fallback Zeus data');
+      setGame(fallbackZeusGame);
     } finally {
       setLoading(false);
     }
@@ -115,6 +181,26 @@ const ZeusGamePage = () => {
     );
   }
 
+  // Helper function to safely format dates
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'TBA';
+    }
+  };
+
+  // Helper function to split title safely
+  const getTitleParts = (title: string) => {
+    const parts = title.split(':');
+    return {
+      main: parts[0] || title,
+      sub: parts[1]?.trim() || ''
+    };
+  };
+
+  const titleParts = getTitleParts(game.title);
+
   return (
     <>
       <div className="min-h-screen bg-brand-dark-gradient">
@@ -126,6 +212,10 @@ const ZeusGamePage = () => {
               src={game.image_url} 
               alt={game.title}
               className="w-full h-full object-cover opacity-30"
+              onError={(e) => {
+                console.log('🎮 ZeusGamePage: Hero image failed to load, using fallback');
+                e.currentTarget.src = 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/50"></div>
@@ -150,7 +240,7 @@ const ZeusGamePage = () => {
               <div className="space-y-8">
                 <div>
                   <h1 className="text-5xl md:text-7xl font-heading font-black uppercase text-white mb-4">
-                    {game.title.split(':')[0]}: <span className="text-brand-orange">{game.title.split(':')[1]?.trim()}</span>
+                    {titleParts.main}: {titleParts.sub && <span className="text-brand-orange">{titleParts.sub}</span>}
                   </h1>
                   <p className="text-xl text-gray-300 leading-relaxed font-body">
                     {game.description}
@@ -197,6 +287,10 @@ const ZeusGamePage = () => {
                     src={game.image_url} 
                     alt={`${game.title} Preview`}
                     className="w-full rounded-lg shadow-2xl"
+                    onError={(e) => {
+                      console.log('🎮 ZeusGamePage: Preview image failed to load, using fallback');
+                      e.currentTarget.src = 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent rounded-2xl"></div>
                 </div>
@@ -254,14 +348,14 @@ const ZeusGamePage = () => {
                   <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
                     <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Early Access</h3>
                     <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {new Date(game.early_access_date).toLocaleDateString()}
+                      {formatDate(game.early_access_date)}
                     </div>
                     <p className="text-gray-400 font-body">Exclusive partner preview</p>
                   </div>
                   <div className="bg-black/30 p-8 rounded-xl border border-gray-800">
                     <h3 className="text-xl font-heading font-bold text-brand-orange mb-4">Full Release</h3>
                     <div className="text-3xl font-bold text-white mb-2 font-heading">
-                      {new Date(game.release_date).toLocaleDateString()}
+                      {formatDate(game.release_date)}
                     </div>
                     <p className="text-gray-400 font-body">Global market launch</p>
                   </div>
