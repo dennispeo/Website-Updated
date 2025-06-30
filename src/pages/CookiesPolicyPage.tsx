@@ -171,9 +171,6 @@ const CookiesPolicyPage = () => {
                 If you have any questions about our use of cookies or this Cookies Policy, please contact us:
               </p>
               <div className="bg-black/40 p-6 rounded-lg border border-gray-700">
-                <p className="text-white font-body mb-2">
-                  <strong>Email:</strong> privacy@playeola.com
-                </p>
                 <p className="text-white font-body">
                   <strong>General Contact:</strong> info@playeola.com
                 </p>
