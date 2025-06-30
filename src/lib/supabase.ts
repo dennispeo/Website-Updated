@@ -51,3 +51,17 @@ export interface Profile {
   created_at: string;
   updated_at: string;
 }
+
+export interface Career {
+  id: string;
+  title: string;
+  requirements: string[];
+  description: string;
+  department: string;
+  location: string;
+  employment_type: string;
+  active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}

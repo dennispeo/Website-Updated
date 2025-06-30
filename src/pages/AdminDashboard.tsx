@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Gamepad2, Newspaper, Users, BarChart3, LogOut } from 'lucide-react';
+import { Gamepad2, Newspaper, Users, BarChart3, LogOut, Briefcase } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, profile, signOut } = useAuth();
@@ -27,18 +27,25 @@ const AdminDashboard = () => {
       color: 'from-green-500 to-green-600'
     },
     {
+      title: 'Careers Management',
+      description: 'Manage job positions and requirements',
+      icon: <Briefcase size={32} />,
+      link: '/admin/careers',
+      color: 'from-purple-500 to-purple-600'
+    },
+    {
       title: 'User Management',
       description: 'Manage user accounts and permissions',
       icon: <Users size={32} />,
       link: '/admin/users',
-      color: 'from-purple-500 to-purple-600'
+      color: 'from-orange-500 to-orange-600'
     },
     {
       title: 'Analytics',
       description: 'View site statistics and performance',
       icon: <BarChart3 size={32} />,
       link: '/admin/analytics',
-      color: 'from-orange-500 to-orange-600'
+      color: 'from-red-500 to-red-600'
     }
   ];
 
@@ -84,12 +91,12 @@ const AdminDashboard = () => {
             Content Management System
           </h1>
           <p className="text-lg text-gray-300 font-body">
-            Manage your website content, games, news, and users from this central dashboard.
+            Manage your website content, games, news, careers, and users from this central dashboard.
           </p>
         </div>
 
         {/* Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {dashboardCards.map((card, index) => (
             <Link
               key={card.title}
@@ -114,7 +121,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
             <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">1</div>
             <div className="text-white font-semibold mb-1 font-body">Active Games</div>
@@ -125,6 +132,12 @@ const AdminDashboard = () => {
             <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">0</div>
             <div className="text-white font-semibold mb-1 font-body">News Articles</div>
             <div className="text-gray-400 text-sm font-body">Published this month</div>
+          </div>
+
+          <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
+            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">3</div>
+            <div className="text-white font-semibold mb-1 font-body">Career Positions</div>
+            <div className="text-gray-400 text-sm font-body">Currently open</div>
           </div>
           
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">

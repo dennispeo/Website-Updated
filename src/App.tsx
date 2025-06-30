@@ -10,6 +10,7 @@ import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import GameManagementPage from './pages/GameManagementPage';
 import NewsManagementPage from './pages/NewsManagementPage';
+import CareersManagementPage from './pages/CareersManagementPage';
 import UserManagementPage from './pages/UserManagementPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Navigation from './components/Navigation';
@@ -85,6 +86,11 @@ function App() {
         <Route path="/admin/news" element={
           <ProtectedRoute requireAdmin={true}>
             <NewsManagementPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/careers" element={
+          <ProtectedRoute requireAdmin={true}>
+            <CareersManagementPage />
           </ProtectedRoute>
         } />
         <Route path="/admin/users" element={
