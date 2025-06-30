@@ -7,23 +7,23 @@ const About = () => {
   const [gridRef, gridInView] = useInView();
 
   const features = [
-    {
-      title: "Mechanics That Break Convention",
-      description: "We don't copy features. Every mechanic is designed to disrupt — modular, dynamic, and built to push what slots can do."
-    },
-    {
-      title: "AI-Enhanced Development",
-      description: "We use AI tools to accelerate production and design — allowing us to move fast, test fast, and stay creatively sharp."
-    },
-    {
-      title: "Custom-Built, Fast to Market",
-      description: "Our system lets us deliver tailor-made games — aligned with your market, audience, and jurisdiction — at an unmatched pace."
-    },
-    {
-      title: "Co-Creation with Our Partners",
-      description: "We collaborate closely to match your goals and player base — from feature tuning to market positioning. You're not just buying a game. You're shaping one."
-    }
-  ];
+  {
+    "title": "Mechanics That Break Convention",
+    "description": "We don't replicate features. Every mechanic is crafted to challenge the norm, built as a modular and dynamic system that expands what slot games are capable of."
+  },
+  {
+    "title": "AI-Enhanced Development",
+    "description": "We apply AI tools to speed up design and production cycles. This allows us to prototype faster, validate ideas quickly, and maintain a high creative standard throughout."
+  },
+  {
+    "title": "Custom-Built, Fast to Market",
+    "description": "Our platform enables rapid delivery of bespoke games tailored to your audience, market preferences, and regulatory needs. Speed never comes at the cost of precision."
+  },
+  {
+    "title": "Co-Creation with Our Partners",
+    "description": "We work side by side with our partners to align every game with their strategy and player base. From early design to final polish, you're involved in shaping a product built for your success."
+  }
+];
 
   return (
     <section id="about" className="py-20 bg-brand-dark-gradient">
@@ -43,7 +43,7 @@ const About = () => {
         }`}>
           <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto font-body">
             We founded Play E Ola to offer something the market was missing: originality.
-            Our games don't chase templates — they're powered by a modular system and a creative process designed to deliver real differentiation to our partners.
+            Our games don't chase templates. They're powered by a modular system and a creative process designed to deliver real differentiation to our partners.
           </p>
         </div>
 
