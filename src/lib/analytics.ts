@@ -115,7 +115,15 @@ class Analytics {
       const interactionData = {
         session_id: this.sessionId,
         page_path: window.location.pathname,
-        ...data
+        interaction_type: data.interactionType,
+        element_id: data.elementId || null,
+        element_class: data.elementClass || null,
+        element_text: data.elementText || null,
+        target_url: data.targetUrl || null,
+        form_name: data.formName || null,
+        button_text: data.buttonText || null,
+        position_x: data.positionX || null,
+        position_y: data.positionY || null
       };
 
       await supabase.from('user_interactions').insert([interactionData]);
