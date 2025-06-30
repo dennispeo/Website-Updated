@@ -1,5 +1,6 @@
 // Analytics tracking utilities
 import { supabase } from './supabase';
+import { cookieConsent } from './cookieConsent';
 
 interface PageViewData {
   sessionId: string;
@@ -87,7 +88,18 @@ class Analytics {
     });
   }
 
+  // Check if analytics tracking is allowed
+  private canTrack(): boolean {
+    return cookieConsent.hasConsent();
+  }
+
   async trackPageView(additionalData: Partial<PageViewData & { timeOnPage?: number; scrollDepth?: number }> = {}) {
+    // Only track if user has consented to cookies
+    if (!this.canTrack()) {
+      console.log('Analytics: Page view tracking skipped - no consent');
+      return;
+    }
+
     try {
       const deviceInfo = this.getDeviceInfo();
       
@@ -111,6 +123,12 @@ class Analytics {
   }
 
   async trackInteraction(data: Omit<InteractionData, 'sessionId' | 'pagePath'>) {
+    // Only track if user has consented to cookies
+    if (!this.canTrack()) {
+      console.log('Analytics: Interaction tracking skipped - no consent');
+      return;
+    }
+
     try {
       const interactionData = {
         session_id: this.sessionId,
@@ -133,6 +151,11 @@ class Analytics {
   }
 
   private async updateSession() {
+    // Only update if user has consented to cookies
+    if (!this.canTrack()) {
+      return;
+    }
+
     try {
       const urlParams = new URLSearchParams(window.location.search);
       
@@ -190,30 +213,44 @@ class Analytics {
 
   // Page transition tracking
   onPageChange() {
-    // Track time on previous page
-    this.trackPageView({
-      timeOnPage: Math.round((Date.now() - this.pageStartTime) / 1000),
-      scrollDepth: this.maxScrollDepth
-    });
+    // Track time on previous page (only if consent given)
+    if (this.canTrack()) {
+      this.trackPageView({
+        timeOnPage: Math.round((Date.now() - this.pageStartTime) / 1000),
+        scrollDepth: this.maxScrollDepth
+      });
+    }
     
     // Reset for new page
     this.pageStartTime = Date.now();
     this.maxScrollDepth = 0;
     
-    // Track new page view
-    setTimeout(() => {
-      this.trackPageView();
-    }, 100);
+    // Track new page view (only if consent given)
+    if (this.canTrack()) {
+      setTimeout(() => {
+        this.trackPageView();
+      }, 100);
+    }
   }
 }
 
 // Create global analytics instance
 export const analytics = new Analytics();
 
-// Auto-track initial page view
+// Auto-track initial page view only if consent is given
 if (typeof window !== 'undefined') {
-  // Track initial page view after a short delay to ensure DOM is ready
+  // Check consent status and track initial page view
   setTimeout(() => {
-    analytics.trackPageView();
+    if (cookieConsent.hasConsent()) {
+      analytics.trackPageView();
+    }
   }, 1000);
+
+  // Listen for consent changes and start tracking if consent is given
+  cookieConsent.onConsentChange((status) => {
+    if (status === 'accepted') {
+      // User just accepted cookies, start tracking
+      analytics.trackPageView();
+    }
+  });
 }

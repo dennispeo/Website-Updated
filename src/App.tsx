@@ -15,6 +15,7 @@ import UserManagementPage from './pages/UserManagementPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Navigation from './components/Navigation';
 import AgeVerificationModal from './components/AgeVerificationModal';
+import CookieConsentBanner from './components/CookieConsentBanner';
 import FloatingContactButton from './components/FloatingContactButton';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAnalytics } from './hooks/useAnalytics';
@@ -26,6 +27,7 @@ function App() {
   return (
     <div className="bg-black text-white">
       <AgeVerificationModal />
+      <CookieConsentBanner />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={
