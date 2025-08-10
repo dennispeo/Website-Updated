@@ -49,11 +49,11 @@ const CareersPage = () => {
           {/* Back Button */}
           <div className="mb-8">
             <Link 
-              to="/"
+              to="/about-us"
               className="inline-flex items-center space-x-2 text-brand-orange hover:text-brand-yellow transition-colors duration-300 font-body"
             >
               <ArrowLeft size={20} />
-              <span>Back to Home</span>
+              <span>Back to About Us</span>
             </Link>
           </div>
 

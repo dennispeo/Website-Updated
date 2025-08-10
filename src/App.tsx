@@ -45,6 +45,13 @@ function App() {
             <FloatingContactButton />
           </>
         } />
+        <Route path="/about-us/careers" element={
+          <>
+            <Navigation />
+            <CareersPage />
+            <FloatingContactButton />
+          </>
+        } />
         <Route path="/backoffice" element={
           <>
             <Navigation />
