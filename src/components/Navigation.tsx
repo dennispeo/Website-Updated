@@ -30,11 +30,11 @@ const Navigation = () => {
   };
 
   const navLinks = [
-    { label: 'About', href: 'about', type: 'scroll' },
-    { label: 'Games', href: 'games', type: 'scroll' },
-    { label: 'Our Team', href: '/about/our-team', type: 'route' },
-    { label: 'Backoffice', href: '/backoffice', type: 'route' },
-    { label: 'Careers', href: '/about-us/careers', type: 'route' }
+    { label: 'About Us', href: 'about', type: 'scroll' },
+    { label: 'Our Games', href: 'games', type: 'scroll' },
+    { label: 'The Team', href: '/about/our-team', type: 'route' },
+    { label: 'Client Area', href: '/backoffice', type: 'route' },
+    { label: 'Join Us', href: '/about-us/careers', type: 'route' }
   ];
 
   return (
