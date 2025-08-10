@@ -187,19 +187,38 @@ const NewsPage = () => {
 
   const fetchNews = async () => {
     try {
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey || 
+          supabaseUrl === 'your_supabase_project_url' || 
+          supabaseAnonKey === 'your_supabase_anon_key') {
+        console.log('Supabase not configured, using sample data');
+        setNews(sampleNews);
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('news')
         .select('*')
         .eq('published', true)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.warn('Supabase query error:', error);
+        // Use sample data as fallback
+        setNews(sampleNews);
+        setLoading(false);
+        return;
+      }
       
       // Use sample data if no database articles exist
       const newsData = data && data.length > 0 ? data : sampleNews;
       setNews(newsData);
     } catch (error) {
-      console.error('Error fetching news:', error);
+      console.warn('Error fetching news, using sample data:', error);
       // Use sample data as fallback
       setNews(sampleNews);
     } finally {
