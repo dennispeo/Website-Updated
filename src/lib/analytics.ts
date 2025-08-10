@@ -90,8 +90,7 @@ class Analytics {
 
   // Check if analytics tracking is allowed
   private canTrack(): boolean {
-    // Check both consent and if Supabase is available
-    return cookieConsent.hasConsent() && this.isSupabaseAvailable();
+    return cookieConsent.hasConsent();
   }
 
   private isSupabaseAvailable(): boolean {
@@ -108,6 +107,12 @@ class Analytics {
     if (!this.canTrack()) {
       const reason = !cookieConsent.hasConsent() ? 'no consent' : 'Supabase not configured';
       console.log(`Analytics: Page view tracking skipped - ${reason}`);
+      return;
+    }
+
+    // Check if Supabase is available before attempting to track
+    if (!this.isSupabaseAvailable()) {
+      console.log('Analytics: Supabase not configured - tracking disabled');
       return;
     }
 
@@ -154,6 +159,12 @@ class Analytics {
       return;
     }
 
+    // Check if Supabase is available before attempting to track
+    if (!this.isSupabaseAvailable()) {
+      console.log('Analytics: Supabase not configured - interaction tracking disabled');
+      return;
+    }
+
     // Skip if session is disabled due to connection issues
     if (this.sessionId === 'disabled') {
       return;
@@ -191,6 +202,12 @@ class Analytics {
   private async updateSession() {
     // Only update if user has consented to cookies
     if (!this.canTrack()) {
+      return;
+    }
+
+    // Check if Supabase is available before attempting to update
+    if (!this.isSupabaseAvailable()) {
+      console.log('Analytics: Supabase not configured - session tracking disabled');
       return;
     }
 
