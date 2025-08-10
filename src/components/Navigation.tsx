@@ -41,6 +41,7 @@ const Navigation = () => {
       ]
     },
     { label: 'Our Games', href: 'games', type: 'scroll' },
+    { label: 'News', href: '/news', type: 'route' },
     { label: 'Client Area', href: '/backoffice', type: 'route' }
   ];
 

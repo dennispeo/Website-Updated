@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import CareersPage from './pages/CareersPage';
 import BackofficePage from './pages/BackofficePage';
+import NewsPage from './pages/NewsPage';
 import GamePage from './pages/GamePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import CookiesPolicyPage from './pages/CookiesPolicyPage';
@@ -35,6 +36,13 @@ function App() {
           <>
             <Navigation />
             <HomePage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/news" element={
+          <>
+            <Navigation />
+            <NewsPage />
             <FloatingContactButton />
           </>
         } />
