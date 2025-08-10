@@ -97,7 +97,10 @@ class Analytics {
   private isSupabaseAvailable(): boolean {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-    return !!(supabaseUrl && supabaseAnonKey);
+    // Check if environment variables exist and are not placeholder values
+    return !!(supabaseUrl && supabaseAnonKey && 
+             supabaseUrl !== 'your_supabase_project_url' && 
+             supabaseAnonKey !== 'your_supabase_anon_key');
   }
 
   async trackPageView(additionalData: Partial<PageViewData & { timeOnPage?: number; scrollDepth?: number }> = {}) {
@@ -121,12 +124,17 @@ class Analytics {
         ...deviceInfo
       };
 
-      await supabase.from('page_views').insert([pageViewData]);
+      const { error } = await supabase.from('page_views').insert([pageViewData]);
+      
+      if (error) {
+        console.warn('Analytics page view insert failed:', error);
+        return;
+      }
       
       // Update or create session
       await this.updateSession();
     } catch (error) {
-      console.warn('Analytics page view tracking failed:', error);
+      console.warn('Analytics page view tracking failed (network/connection issue):', error);
     }
   }
 
@@ -153,9 +161,13 @@ class Analytics {
         position_y: data.positionY || null
       };
 
-      await supabase.from('user_interactions').insert([interactionData]);
+      const { error } = await supabase.from('user_interactions').insert([interactionData]);
+      
+      if (error) {
+        console.warn('Analytics interaction insert failed:', error);
+      }
     } catch (error) {
-      console.warn('Analytics interaction tracking failed:', error);
+      console.warn('Analytics interaction tracking failed (network/connection issue):', error);
     }
   }
 
@@ -188,10 +200,10 @@ class Analytics {
         });
 
       if (error) {
-        console.warn('Analytics session update failed:', error);
+        console.warn('Analytics session upsert failed:', error);
       }
     } catch (error) {
-      console.warn('Analytics session tracking failed:', error);
+      console.warn('Analytics session tracking failed (network/connection issue):', error);
     }
   }
 
