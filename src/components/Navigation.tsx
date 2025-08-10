@@ -260,6 +260,9 @@ const Navigation = () => {
                 )
               )}
             </div>
+          ))}
+        </div>
+      </div>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
