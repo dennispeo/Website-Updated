@@ -260,47 +260,6 @@ const Navigation = () => {
                 )
               )}
             </div>
-              ))}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-white hover:text-brand-orange transition-colors duration-200"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Menu */}
-      <div className={`fixed top-0 right-0 h-full w-80 bg-brand-dark/95 backdrop-blur-sm z-40 transform transition-transform duration-300 md:hidden ${
-        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
-        <div className="flex flex-col pt-20 px-6 space-y-6">
-          {navLinks.map((link) => (
-            link.type === 'route' ? (
-              <Link
-                key={link.label}
-                to={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-left text-lg font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body"
-              >
-                {link.label}
-              </Link>
-            ) : (
-              <button
-                key={link.label}
-                onClick={() => scrollToSection(link.href)}
-                className="text-left text-lg font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body"
-              >
-                {link.label}
-              </button>
-            )
-          ))}
-        </div>
-      </div>
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
