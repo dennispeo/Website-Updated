@@ -90,13 +90,21 @@ class Analytics {
 
   // Check if analytics tracking is allowed
   private canTrack(): boolean {
-    return cookieConsent.hasConsent();
+    // Check both consent and if Supabase is available
+    return cookieConsent.hasConsent() && this.isSupabaseAvailable();
+  }
+
+  private isSupabaseAvailable(): boolean {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    return !!(supabaseUrl && supabaseAnonKey);
   }
 
   async trackPageView(additionalData: Partial<PageViewData & { timeOnPage?: number; scrollDepth?: number }> = {}) {
     // Only track if user has consented to cookies
     if (!this.canTrack()) {
-      console.log('Analytics: Page view tracking skipped - no consent');
+      const reason = !cookieConsent.hasConsent() ? 'no consent' : 'Supabase not configured';
+      console.log(`Analytics: Page view tracking skipped - ${reason}`);
       return;
     }
 
@@ -118,14 +126,15 @@ class Analytics {
       // Update or create session
       await this.updateSession();
     } catch (error) {
-      console.warn('Analytics tracking failed:', error);
+      console.warn('Analytics page view tracking failed:', error);
     }
   }
 
   async trackInteraction(data: Omit<InteractionData, 'sessionId' | 'pagePath'>) {
     // Only track if user has consented to cookies
     if (!this.canTrack()) {
-      console.log('Analytics: Interaction tracking skipped - no consent');
+      const reason = !cookieConsent.hasConsent() ? 'no consent' : 'Supabase not configured';
+      console.log(`Analytics: Interaction tracking skipped - ${reason}`);
       return;
     }
 
@@ -146,7 +155,7 @@ class Analytics {
 
       await supabase.from('user_interactions').insert([interactionData]);
     } catch (error) {
-      console.warn('Interaction tracking failed:', error);
+      console.warn('Analytics interaction tracking failed:', error);
     }
   }
 
@@ -179,10 +188,10 @@ class Analytics {
         });
 
       if (error) {
-        console.warn('Session update failed:', error);
+        console.warn('Analytics session update failed:', error);
       }
     } catch (error) {
-      console.warn('Session tracking failed:', error);
+      console.warn('Analytics session tracking failed:', error);
     }
   }
 
