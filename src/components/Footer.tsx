@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MessageCircle, ArrowRight, Sparkles, Zap, Settings } from 'lucide-react';
+import { Mail, MessageCircle, ArrowRight, Sparkles, Zap, Settings, Linkedin, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ContactModal from './ContactModal';
 
@@ -103,6 +103,59 @@ const Footer = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Social Media Section */}
+          <div className="text-center mb-16">
+            <h3 className="text-2xl font-heading font-bold text-white mb-8">
+              Connect <span className="text-brand-orange">With Us</span>
+            </h3>
+            
+            <div className="flex justify-center space-x-6">
+              {/* LinkedIn */}
+              <a
+                href="https://linkedin.com/company/playeola"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-orange/20 hover:text-brand-orange transition-all duration-300 hover:scale-110"
+                aria-label="Follow us on LinkedIn"
+              >
+                <Linkedin size={24} />
+              </a>
+              
+              {/* Facebook */}
+              <a
+                href="https://facebook.com/playeola"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-orange/20 hover:text-brand-orange transition-all duration-300 hover:scale-110"
+                aria-label="Follow us on Facebook"
+              >
+                <Facebook size={24} />
+              </a>
+              
+              {/* Instagram */}
+              <a
+                href="https://instagram.com/playeola"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-orange/20 hover:text-brand-orange transition-all duration-300 hover:scale-110"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram size={24} />
+              </a>
+              
+              {/* YouTube */}
+              <a
+                href="https://youtube.com/@playeola"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-orange/20 hover:text-brand-orange transition-all duration-300 hover:scale-110"
+                aria-label="Subscribe to our YouTube channel"
+              >
+                <Youtube size={24} />
+              </a>
             </div>
           </div>
 
