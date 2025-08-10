@@ -107,9 +107,9 @@ const Footer = () => {
           </div>
 
           {/* Social Media Section */}
-          <div className="text-center mb-16">
+          <div className="text-center mb-16 py-8 border-t border-gray-800">
             <h3 className="text-2xl font-heading font-bold text-white mb-8">
-              Connect <span className="text-brand-orange">With Us</span>
+              Follow <span className="text-brand-orange">Us</span>
             </h3>
             
             <div className="flex justify-center space-x-6">
@@ -165,7 +165,7 @@ const Footer = () => {
               {/* Copyright - Left */}
               <div className="lg:col-span-1">
                 <p className="text-sm text-gray-500 font-body">
-                  © 2025 Play E Ola. All rights reserved.
+                  © 2025 PlayEola. All rights reserved.
                 </p>
                 <p className="text-xs text-gray-600 font-body mt-1">
                   Digital Chaos Engineered with ❤️

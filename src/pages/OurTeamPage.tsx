@@ -25,6 +25,7 @@ const OurTeamPage = () => {
       name: 'Alex Johnson',
       title: 'CEO & Founder',
       description: 'Visionary leader with 15+ years in the gaming industry. Alex founded Play E Ola with the mission to revolutionize slot game mechanics through innovative technology and creative design. Previously led product development at major gaming studios.',
+      description: 'Visionary leader with 15+ years in the gaming industry. Alex founded PlayEola with the mission to revolutionize slot game mechanics through innovative technology and creative design. Previously led product development at major gaming studios.',
       imageUrl: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&dpr=1',
       linkedinUrl: 'https://linkedin.com/in/alexjohnson',
       email: 'alex@playeola.com'
@@ -43,6 +44,7 @@ const OurTeamPage = () => {
       name: 'Marcus Rodriguez',
       title: 'Head of Game Design',
       description: 'Creative force driving our unique game concepts and player experiences. Marcus combines mathematical precision with artistic vision to create games that are both engaging and fair. His innovative approach to game mechanics sets Play E Ola apart.',
+      description: 'Creative force driving our unique game concepts and player experiences. Marcus combines mathematical precision with artistic vision to create games that are both engaging and fair. His innovative approach to game mechanics sets PlayEola apart.',
       imageUrl: 'https://images.pexels.com/photos/3777931/pexels-photo-3777931.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&dpr=1',
       linkedinUrl: 'https://linkedin.com/in/marcusrodriguez',
       email: 'marcus@playeola.com'
@@ -80,7 +82,7 @@ const OurTeamPage = () => {
               Meet Our <span className="text-brand-orange">Team</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto font-body">
-              The creative minds and technical experts behind Play E Ola's innovative gaming experiences.
+              The creative minds and technical experts behind PlayEola's innovative gaming experiences.
             </p>
           </div>
 

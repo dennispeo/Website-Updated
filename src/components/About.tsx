@@ -42,7 +42,7 @@ const About = () => {
           contentInView ? 'opacity-100' : 'opacity-0'
         }`}>
           <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto font-body">
-            We founded Play E Ola to offer something the market was missing: originality.
+            We founded PlayEola to offer something the market was missing: originality.
             Our games don't chase templates. They're powered by a modular system and a creative process designed to deliver real differentiation to our partners.
           </p>
         </div>

@@ -21,6 +21,7 @@ const NewsPage = () => {
       excerpt: 'Experience the revolutionary wavE™ mechanic in our flagship title.',
       image_url: 'https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1',
       author: 'Play E Ola Team',
+      author: 'PlayEola Team',
       published: true,
       created_at: '2025-01-15T10:00:00Z',
       updated_at: '2025-01-15T10:00:00Z'
@@ -65,6 +66,7 @@ const NewsPage = () => {
       excerpt: 'Exclusive preview of our Q1 2025 development roadmap.',
       image_url: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1',
       author: 'Play E Ola Team',
+      author: 'PlayEola Team',
       published: true,
       created_at: '2025-01-05T11:20:00Z',
       updated_at: '2025-01-05T11:20:00Z'
@@ -175,6 +177,7 @@ const NewsPage = () => {
       excerpt: 'Celebrating our achievements and milestones from 2024.',
       image_url: 'https://images.pexels.com/photos/1181534/pexels-photo-1181534.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1',
       author: 'Play E Ola Team',
+      author: 'PlayEola Team',
       published: true,
       created_at: '2024-12-10T17:00:00Z',
       updated_at: '2024-12-10T17:00:00Z'
@@ -264,7 +267,7 @@ const NewsPage = () => {
               Latest <span className="text-brand-orange">News</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-4xl mx-auto font-body">
-              Stay updated with the latest developments, game releases, and industry insights from Play E Ola.
+              Stay updated with the latest developments, game releases, and industry insights from PlayEola.
             </p>
           </div>
 

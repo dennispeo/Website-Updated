@@ -37,7 +37,7 @@ const CookiesPolicyPage = () => {
                 Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences and understand how you interact with the site.
               </p>
               <p className="text-gray-300 leading-relaxed font-body">
-                This Cookies Policy explains how Play E Ola uses cookies and similar technologies on our website to provide you with a better experience and improve our services.
+                This Cookies Policy explains how PlayEola uses cookies and similar technologies on our website to provide you with a better experience and improve our services.
               </p>
             </section>
 

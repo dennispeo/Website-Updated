@@ -130,7 +130,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                 id="contact-modal-title"
                 className="text-2xl font-heading font-bold text-brand-dark"
               >
-                Partner with Play E Ola
+                Partner with PlayEola
               </h2>
               <p className="text-brand-dark/80 font-body mt-1">
                 Let's create digital chaos together

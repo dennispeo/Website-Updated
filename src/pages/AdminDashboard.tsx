@@ -59,7 +59,7 @@ const AdminDashboard = () => {
               <Link to="/">
                 <img 
                   src="/PLAY_E_OLA_Logo White-gold.png" 
-                  alt="Play E Ola" 
+                  alt="PlayEola" 
                   className="h-8 w-auto"
                 />
               </Link>

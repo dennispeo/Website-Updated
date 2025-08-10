@@ -40,7 +40,7 @@ const Navigation = () => {
         { label: 'Join Us', href: '/about-us/careers', type: 'route' }
       ]
     },
-    { label: 'Our Games', href: 'games', type: 'scroll' },
+    { label: 'Games', href: 'games', type: 'scroll' },
     { label: 'News', href: '/news', type: 'route' },
     { label: 'Client Area', href: '/backoffice', type: 'route' }
   ];
@@ -97,7 +97,7 @@ const Navigation = () => {
                               <Link
                                 key={subLink.label}
                                 to={subLink.href}
-                                className="block px-4 py-2 text-sm font-semibold text-white hover:text-brand-orange hover:bg-black/30 transition-all duration-200 font-body"
+                                className="block px-4 py-2 text-sm font-bold text-white hover:text-brand-orange hover:bg-black/30 transition-all duration-200 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </Link>
@@ -105,7 +105,7 @@ const Navigation = () => {
                               <button
                                 key={subLink.label}
                                 onClick={() => scrollToSection(subLink.href)}
-                                className="block w-full text-left px-4 py-2 text-sm font-semibold text-white hover:text-brand-orange hover:bg-black/30 transition-all duration-200 font-body"
+                                className="block w-full text-left px-4 py-2 text-sm font-bold text-white hover:text-brand-orange hover:bg-black/30 transition-all duration-200 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </button>
@@ -163,7 +163,7 @@ const Navigation = () => {
                     <div>
                       <button
                         onClick={() => setShowAboutSubMenu(!showAboutSubMenu)}
-                        className="flex items-center justify-between w-full text-left text-lg font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body"
+                        className="flex items-center justify-between w-full text-left text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body whitespace-nowrap"
                       >
                         <span>{link.label}</span>
                         <ChevronDown size={16} className={`transition-transform duration-200 ${showAboutSubMenu ? 'rotate-180' : ''}`} />
@@ -176,7 +176,7 @@ const Navigation = () => {
                                 key={subLink.label}
                                 to={subLink.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="block text-base font-semibold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body"
+                                className="block text-sm font-bold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </Link>
@@ -187,7 +187,7 @@ const Navigation = () => {
                                   scrollToSection(subLink.href);
                                   setShowAboutSubMenu(false);
                                 }}
-                                className="block w-full text-left text-base font-semibold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body"
+                                className="block w-full text-left text-sm font-bold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </button>
@@ -200,7 +200,7 @@ const Navigation = () => {
                     <div>
                       <button
                         onClick={() => setShowAboutSubMenu(!showAboutSubMenu)}
-                        className="flex items-center justify-between w-full text-left text-lg font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body"
+                        className="flex items-center justify-between w-full text-left text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-colors duration-200 py-2 font-body whitespace-nowrap"
                       >
                         <span>{link.label}</span>
                         <ChevronDown size={16} className={`transition-transform duration-200 ${showAboutSubMenu ? 'rotate-180' : ''}`} />
@@ -213,7 +213,7 @@ const Navigation = () => {
                                 key={subLink.label}
                                 to={subLink.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="block text-base font-semibold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body"
+                                className="block text-sm font-bold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </Link>
@@ -224,7 +224,7 @@ const Navigation = () => {
                                   scrollToSection(subLink.href);
                                   setShowAboutSubMenu(false);
                                 }}
-                                className="block w-full text-left text-base font-semibold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body"
+                                className="block w-full text-left text-sm font-bold text-gray-300 hover:text-brand-orange transition-colors duration-200 py-1 font-body whitespace-nowrap"
                               >
                                 {subLink.label}
                               </button>
@@ -241,7 +241,7 @@ const Navigation = () => {
                   <Link
                     key={link.label}
                     to={link.href}
-                    className="nav-link text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-all duration-200 relative group font-body"
+                    className="nav-link text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-all duration-200 relative group font-body whitespace-nowrap"
                   >
                     {link.label}
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-orange transition-all duration-200 group-hover:w-full"></span>
@@ -253,7 +253,7 @@ const Navigation = () => {
                       scrollToSection(link.href);
                       setIsMobileMenuOpen(false);
                     }}
-                    className="nav-link text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-all duration-200 relative group font-body"
+                    className="nav-link text-sm font-bold uppercase tracking-widest text-white hover:text-brand-orange transition-all duration-200 relative group font-body whitespace-nowrap"
                   >
                     {link.label}
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-orange transition-all duration-200 group-hover:w-full"></span>

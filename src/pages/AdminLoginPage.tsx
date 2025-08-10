@@ -59,7 +59,7 @@ const AdminLoginPage = () => {
           <div className="text-center mb-8">
             <img 
               src="/PLAY_E_OLA_Logo White-gold.png" 
-              alt="Play E Ola" 
+              alt="PlayEola" 
               className="h-12 w-auto mx-auto mb-4"
             />
             <h1 className="text-2xl font-heading font-bold text-white mb-2">

@@ -75,7 +75,7 @@ const Careers = () => {
 
   const handleApply = (role: string) => {
     const subject = encodeURIComponent(`Application for ${role} Position`);
-    const body = encodeURIComponent(`Hi Play E Ola Team,\n\nI'm interested in applying for the ${role} position. Please find my application details below.\n\nBest regards,`);
+    const body = encodeURIComponent(`Hi PlayEola Team,\n\nI'm interested in applying for the ${role} position. Please find my application details below.\n\nBest regards,`);
     window.open(`mailto:careers@playeola.com?subject=${subject}&body=${body}`);
   };
 
@@ -87,7 +87,7 @@ const Careers = () => {
           titleInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
           <h2 className="text-4xl md:text-6xl font-heading font-black uppercase tracking-wider text-white">
-            Join <span className="text-brand-orange">Play E Ola</span>
+            Join <span className="text-brand-orange">PlayEola</span>
           </h2>
         </div>
 

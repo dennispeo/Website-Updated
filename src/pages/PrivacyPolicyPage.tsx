@@ -34,7 +34,7 @@ const PrivacyPolicyPage = () => {
             <section>
               <h2 className="text-2xl font-heading font-bold text-brand-orange mb-4">1. Introduction</h2>
               <p className="text-gray-300 leading-relaxed font-body mb-4">
-                Play E Ola ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+                PlayEola ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
               </p>
               <p className="text-gray-300 leading-relaxed font-body">
                 By accessing or using our services, you agree to the collection and use of information in accordance with this policy.
