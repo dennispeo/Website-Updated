@@ -14,6 +14,7 @@ import CareersManagementPage from './pages/CareersManagementPage';
 import UserManagementPage from './pages/UserManagementPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import Navigation from './components/Navigation';
+import OurTeamPage from './pages/OurTeamPage';
 import AgeVerificationModal from './components/AgeVerificationModal';
 import CookieConsentBanner from './components/CookieConsentBanner';
 import FloatingContactButton from './components/FloatingContactButton';
@@ -69,6 +70,13 @@ function App() {
           <>
             <Navigation />
             <GamePage />
+            <FloatingContactButton />
+          </>
+        } />
+        <Route path="/about/our-team" element={
+          <>
+            <Navigation />
+            <OurTeamPage />
             <FloatingContactButton />
           </>
         } />
