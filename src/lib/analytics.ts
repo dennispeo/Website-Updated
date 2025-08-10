@@ -124,17 +124,25 @@ class Analytics {
         ...deviceInfo
       };
 
+      // Test Supabase connection first
       const { error } = await supabase.from('page_views').insert([pageViewData]);
       
       if (error) {
-        console.warn('Analytics page view insert failed:', error);
+        console.warn('Analytics page view insert failed:', error.message || error);
         return;
       }
       
       // Update or create session
       await this.updateSession();
     } catch (error) {
-      console.warn('Analytics page view tracking failed (network/connection issue):', error);
+      // Handle network errors gracefully
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.warn('Analytics: Supabase connection failed - tracking disabled for this session');
+        // Disable further tracking attempts for this session
+        this.sessionId = 'disabled';
+        return;
+      }
+      console.warn('Analytics page view tracking failed:', error);
     }
   }
 
@@ -146,6 +154,10 @@ class Analytics {
       return;
     }
 
+    // Skip if session is disabled due to connection issues
+    if (this.sessionId === 'disabled') {
+      return;
+    }
     try {
       const interactionData = {
         session_id: this.sessionId,
@@ -164,10 +176,15 @@ class Analytics {
       const { error } = await supabase.from('user_interactions').insert([interactionData]);
       
       if (error) {
-        console.warn('Analytics interaction insert failed:', error);
+        console.warn('Analytics interaction insert failed:', error.message || error);
       }
     } catch (error) {
-      console.warn('Analytics interaction tracking failed (network/connection issue):', error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.warn('Analytics: Supabase connection failed - disabling interaction tracking');
+        this.sessionId = 'disabled';
+        return;
+      }
+      console.warn('Analytics interaction tracking failed:', error);
     }
   }
 
@@ -177,6 +194,10 @@ class Analytics {
       return;
     }
 
+    // Skip if session is disabled due to connection issues
+    if (this.sessionId === 'disabled') {
+      return;
+    }
     try {
       const urlParams = new URLSearchParams(window.location.search);
       
@@ -200,10 +221,15 @@ class Analytics {
         });
 
       if (error) {
-        console.warn('Analytics session upsert failed:', error);
+        console.warn('Analytics session upsert failed:', error.message || error);
       }
     } catch (error) {
-      console.warn('Analytics session tracking failed (network/connection issue):', error);
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.warn('Analytics: Supabase connection failed - disabling session tracking');
+        this.sessionId = 'disabled';
+        return;
+      }
+      console.warn('Analytics session tracking failed:', error);
     }
   }
 
