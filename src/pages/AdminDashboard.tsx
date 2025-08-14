@@ -1,10 +1,78 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 import { Gamepad2, Newspaper, Users, BarChart3, LogOut, Briefcase } from 'lucide-react';
 
 const AdminDashboard = () => {
   const { user, profile, signOut } = useAuth();
+  const [stats, setStats] = useState({
+    totalGames: 0,
+    activeGames: 0,
+    totalNews: 0,
+    publishedNews: 0,
+    totalCareers: 0,
+    activeCareers: 0,
+    totalUsers: 0,
+    adminUsers: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const fetchDashboardStats = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch games stats
+      const { data: games, error: gamesError } = await supabase
+        .from('games')
+        .select('id, available');
+      
+      if (gamesError) throw gamesError;
+
+      // Fetch news stats
+      const { data: news, error: newsError } = await supabase
+        .from('news')
+        .select('id, published');
+      
+      if (newsError) throw newsError;
+
+      // Fetch careers stats
+      const { data: careers, error: careersError } = await supabase
+        .from('careers')
+        .select('id, active');
+      
+      if (careersError) throw careersError;
+
+      // Fetch users stats
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, is_admin');
+      
+      if (profilesError) throw profilesError;
+
+      // Calculate stats
+      setStats({
+        totalGames: games?.length || 0,
+        activeGames: games?.filter(g => g.available).length || 0,
+        totalNews: news?.length || 0,
+        publishedNews: news?.filter(n => n.published).length || 0,
+        totalCareers: careers?.length || 0,
+        activeCareers: careers?.filter(c => c.active).length || 0,
+        totalUsers: profiles?.length || 0,
+        adminUsers: profiles?.filter(p => p.is_admin).length || 0
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      // Keep default stats if there's an error
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -123,26 +191,32 @@ const AdminDashboard = () => {
         {/* Quick Stats */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">1</div>
+            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">
+              {loading ? '...' : stats.activeGames}
+            </div>
             <div className="text-white font-semibold mb-1 font-body">Active Games</div>
             <div className="text-gray-400 text-sm font-body">Currently published</div>
           </div>
           
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">0</div>
+            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">
+              {loading ? '...' : stats.publishedNews}
+            </div>
             <div className="text-white font-semibold mb-1 font-body">News Articles</div>
-            <div className="text-gray-400 text-sm font-body">Published this month</div>
+            <div className="text-gray-400 text-sm font-body">Currently published</div>
           </div>
 
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
-            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">3</div>
+            <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">
+              {loading ? '...' : stats.activeCareers}
+            </div>
             <div className="text-white font-semibold mb-1 font-body">Career Positions</div>
             <div className="text-gray-400 text-sm font-body">Currently open</div>
           </div>
           
           <div className="bg-black/30 p-6 rounded-xl border border-gray-800">
             <div className="text-2xl font-bold text-brand-orange mb-2 font-heading">
-              {profile?.is_admin ? '1' : '0'}
+              {loading ? '...' : stats.adminUsers}
             </div>
             <div className="text-white font-semibold mb-1 font-body">Admin Users</div>
             <div className="text-gray-400 text-sm font-body">Total administrators</div>

@@ -115,7 +115,7 @@ const Footer = () => {
             <div className="flex justify-center space-x-6">
               {/* LinkedIn */}
               <a
-                href="https://linkedin.com/company/playeola"
+                href="https://www.linkedin.com/company/playeola"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-brand-orange/20 hover:text-brand-orange transition-all duration-300 hover:scale-110"
